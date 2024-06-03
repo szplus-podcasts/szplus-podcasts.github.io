@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <hgroup>
+                                <h1>SZ Plus Podcasts</h1>
+                                <h2>aber kostenlos</h2>
+                            </hgroup>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="podcast-header">
+            <h2>German Angst</h2>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s7xPpIhPPraPl6MZaB2L-N8bcyaT7G4tZ9LEs6VWPYbw=/https://main.podigee-cdn.net/uploads/u1617/95527880-c06e-4159-a60a-266c3070da91.jpeg" alt="German Angst">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/german-angst.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p>Blackout, Krieg, Corona. Ein SZ-Podcast über unsere Gesellschaft im Krisenmodus – und wer davon profitiert.<br><br>Mehr als die Hälfte aller Deutschen besitzt einen Notvorrat. Diese Menschen wollen vorbereitet sein, wenn eine Katastrophe kommt. So weit, so vernünftig. Doch es gibt auch Menschen, die versuchen, die Debatte über Krisenvorsorge zu missbrauchen. Extremisten möchten Stimmung für ihre Überzeugungen machen. Und manche wollen einen Tag X, der alles verändern könnte, sogar selbst herbeiführen.<br><br>Hören Sie die erste Folge kostenlos – alle weiteren mit SZ Plus.</p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Folge 6: Keine Panik</h2>
+                    <time datetime="2023-05-04T12:00:00.000Z">04.05.2023</time>
+                </header>
+                <p><p>Die Krisenvorsorge-Managerin Sandra Kreitner reist durch Deutschland und bereitet Gemeinden auf den Blackout vor und das BBK rät allen Bürgern, einen Notfallvorrat anzulegen. Wie spricht man am besten über Krisen, ohne Panik zu machen? Und wie nehmen wir den Rechten und Verschwörungsideologen das Monopol auf die Krisenvorsorge weg?</p></p>
+                <a href="https://audio.podigee-cdn.net/1087474-m-ef4898dac2a510234bf241f007d0ec96.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/7-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 5: Operation Blackout</h2>
+                    <time datetime="2023-04-27T12:00:00.000Z">27.04.2023</time>
+                </header>
+                <p><p>Die Gruppe "Vereinte Patrioten" soll geplant haben, die Regierung zu stürzen und ein neues deutsches Kaiserreich zu errichten – ohne Kaiser. Schritt 1 ihres mutmaßlichen Plans: das Stromnetz lahmlegen, mit einer Menge Sprengstoff. Wie realistisch sind ihre Umsturz-Pläne?</p></p>
+                <a href="https://audio.podigee-cdn.net/1085976-m-aa5c9957459f645a0c722c47b3ba46c5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 4: Dosenbrot und Armbrust</h2>
+                    <time datetime="2023-04-20T12:00:00.000Z">20.04.2023</time>
+                </header>
+                <p><p>In Online-Shops findet man heute alles, was das Prepper-Herz begehrt. Krisenvorbereitung kommt immer mehr in der Mitte der Gesellschaft an. Doch auch Verschwörungsideologen und rechte Akteure drängen auf den Markt – und machen Geld damit, dass sie die Angst vor Krisen schüren.</p></p>
+                <a href="https://audio.podigee-cdn.net/1079570-m-7edb1d42d24a9d20176b500568f153d5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 3: Auf dem rechten Weg</h2>
+                    <time datetime="2023-04-13T12:00:00.000Z">13.04.2023</time>
+                </header>
+                <p><p>Der AfD-Politiker Steffen Kotré schimpft im Bundestag über die deutsche Energiepolitik. Sebastian Schmidtke von der NPD inszeniert sich online als Krisenexperte und Survival-Profi. Rechte Parteien wollen für die Bevölkerung relevant bleiben. Dafür scheinen sie ein neues Lieblingsthema zu haben: Krisenvorsorge.</p></p>
+                <a href="https://audio.podigee-cdn.net/1073629-m-68223100c6c30a15743c4f0471a41bac.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/4-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 2: Absolute Dunkelheit</h2>
+                    <time datetime="2023-04-06T12:05:00.000Z">06.04.2023</time>
+                </header>
+                <p><p>Blackout in Köpenick: 2019 fällt in dem Berliner Bezirk der Strom aus. Mehr als 30 Stunden lang herrscht Ausnahmezustand. Auf Youtube warnt Stefan Spiegelsperger, der sich selbst „Mister Blackout“ nennt, vor einem noch viel größeren Stromausfall, der schon bald kommen soll. Wie sicher ist das europäische Stromnetz? Und was passiert, wenn Mister Blackout recht behält?</p></p>
+                <a href="https://audio.podigee-cdn.net/1065714-m-c86d0ea73690a019a0a383037948c21d.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 1: Nichts wie weg</h2>
+                    <time datetime="2023-04-06T12:00:00.000Z">06.04.2023</time>
+                </header>
+                <p><p>Wenn der Tag kommt, der alles verändert, ist Janis vorbereitet. Dann packt sie ihren Fluchtrucksack und fährt in den Wald, bloß weg von anderen Menschen. In einer Krise ist jeder auf sich allein gestellt, glaubt sie. Viele in Deutschland denken wie Janis. Sie legen Vorräte für den Notfall an und tauschen im Internet Survival-Tipps. Vor was fürchten sie sich?</p></p>
+                <a href="https://audio.podigee-cdn.net/1065711-m-7cd1c7dd8de9fc377705eef8882a93fb.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast841ed7.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>

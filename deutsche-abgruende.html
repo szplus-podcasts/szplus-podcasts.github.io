@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <hgroup>
+                                <h1>SZ Plus Podcasts</h1>
+                                <h2>aber kostenlos</h2>
+                            </hgroup>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="podcast-header">
+            <h2>NSU-Podcast</h2>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sA5NAnr5VREpeV3r3ZqVXy2fFJNlYjRiHkEQlYV2w6OU=/https://main.podigee-cdn.net/uploads/u1617/a100663e-ca8e-4756-93b5-622cecc0312b.jpg" alt="NSU-Podcast">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/deutsche-abgruende.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p>Vor zwanzig Jahren mordete der Nationalsozialistische Untergrund zum ersten Mal. Es war der Anfang der größten rassistischen Mordserie in der Geschichte der Bundesrepublik.<br><br>Weshalb haben Behörden und Politik diese Gefahr so unterschätzt? Und wie wurde der NSU zum Vorbild in der rechten Szene?<br><br>In dieser achtteiligen Podcast-Serie gibt die Süddeutsche Zeitung Antwort auf diese Fragen. Die Serie ist in Zusammenarbeit mit der Audioplattform FYEO entstanden.</p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Jena-Winzerla</h2>
+                    <time datetime="2020-09-14T09:09:00.000Z">14.09.2020</time>
+                </header>
+                <p><p>Beate Zschäpe, Uwe Mundlos und Uwe Böhnhardt wachsen in Jena auf. Sie lernen sich in der Schule kennen, über gemeinsame Freunde und den neueröffneten Jugendclub im Stadtteil Winzerla. Aber warum werden sie so radikal? Wir verläuft ihr Weg in den Untergrund?</p></p>
+                <a href="https://audio.podigee-cdn.net/275159-m-b17ff7c29b8d1a196f055b487066a0f7.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Deutsche Abgründe: NSU 2.0</h2>
+                    <time datetime="2020-09-14T09:04:19.914Z">14.09.2020</time>
+                </header>
+                <p><p>Im Sommer 2018 gilt der sogenannte "NSU-Komplex" für viele Menschen als abgeschlossen. Denn es gibt ein Urteil im NSU-Prozess, in dem es fünf Jahre lang um all die Straftaten der Terrorgruppe "Nationalsozialistischer Untergrund" (NSU) ging. Aber nach dem Urteil ist in Wahrheit noch nichts zu Ende. Das wird deutlich, als die Anwältin Seda Başay-Yildiz nur drei Wochen nach der Urteilsverkündung ein Fax bekommt. Vom NSU 2.0. Und damit ist es noch nicht zu Ende.</p></p>
+                <a href="https://audio.podigee-cdn.net/275141-m-a8e7ef8566dae1632dcd44664cedefda.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Schüsse aus dem Nichts</h2>
+                    <time datetime="2020-09-14T09:04:15.191Z">14.09.2020</time>
+                </header>
+                <p><p>Abdulkerim Şimşek ist 13 Jahre alt, als sein Vater in Nürnberg erschossen wird. Aus dem Nichts. Die Familie ist von einem Tag auf den anderen zerstört. Und sie ist ratlos: Wer hat ihren Vater ermordet? Und warum gerade ihn?</p></p>
+                <a href="https://audio.podigee-cdn.net/275162-m-0f7b1d62f6080b87e8d50888774af8ff.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Pizza &amp; Prosecco</h2>
+                    <time datetime="2020-09-14T09:04:12.402Z">14.09.2020</time>
+                </header>
+                <p><p>Von 1998 an leben Uwe Böhnhardt, Uwe Mundlos und Beate Zschäpe im Untergrund. Aber ist das wirklich das richtige Wort: „Untergrund"? Denn während die Polizei das Trio 13 Jahre lang nicht findet, gibt es viele, ganz normale Menschen, die sich sogar mit den dreien anfreunden oder in den Urlaub fahren.</p></p>
+                <a href="https://audio.podigee-cdn.net/275165-m-3d0bbccb565f684d3571a635bc7b8dc6.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Konfetti</h2>
+                    <time datetime="2020-09-14T09:04:09.369Z">14.09.2020</time>
+                </header>
+                <p><p>Nachdem der NSU sich selbst enttarnt hat, fragt die Republik: Warum hat der Verfassungsschutz nichts gewusst? Waren die Behörden blind? Wollten sie nichts wissen? Das fragt sich auch ein Mitarbeiter des Bundesamts für Verfassungsschutz in Köln - und schreddert wichtige Akten.</p></p>
+                <a href="https://audio.podigee-cdn.net/275167-m-e5c2b0781a2657d4e9e310446d86cb78.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e7-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Fahrräder</h2>
+                    <time datetime="2020-09-14T09:04:07.137Z">14.09.2020</time>
+                </header>
+                <p><p>Die NSU-Morde geben den Ermittlern Rätsel auf: Es gibt kaum Spuren. Und schon gar kein Bekennerschreiben zu den Taten. Aber sind das die einzigen Gründe, warum der NSU nicht gefasst werden konnte? Die Polizei betreibt Dönerbuden mit verdeckten Ermittlern und hält ganze Einsatzdienststellen bereit, um zuschlagen zu können. Aber sie ist blind für das, was hinter den Taten steckt.</p></p>
+                <a href="https://audio.podigee-cdn.net/275166-m-4f50445be563c8fb9ebe5edaa8c2c280.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Entgrenzung</h2>
+                    <time datetime="2020-09-14T09:04:04.516Z">14.09.2020</time>
+                </header>
+                <p><p>Folge 8: "Entgrenzung"
+Viele Menschen in Deutschland setzen sich für das Gedenken an den NSU-Komplex ein. Und für dessen kontinuierliche Aufarbeitung. Aber diese Arbeit ist nicht leicht und trifft sogar auf Widerstand. Dazu kommt: Die rechte Szene verändert sich.</p></p>
+                <a href="https://audio.podigee-cdn.net/275170-m-5f27cde0895119f9474e2e2bc249652b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e9-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>438 Tage</h2>
+                    <time datetime="2020-09-14T09:04:00.263Z">14.09.2020</time>
+                </header>
+                <p><p>Am 6. Mai 2013 beginnt der NSU-Prozess. Er dauert 438 Verhandlungstage, fünf Jahre, zwei Monate und sechs Tage. Am Anfang hoffen alle darauf, dass Beate Zschäpe spricht. Lange spricht sie nicht. Der NSU-Prozess wird trotzdem ein historischer Prozess, eine Tiefenbohrung in die deutsche Gesellschaft, er leuchtet Abgründe aus. Und er ist ein Hochamt der Zermürbung. Die Angehörigen der Opfer hoffen bis zuletzt auf Gerechtigkeit.</p></p>
+                <a href="https://audio.podigee-cdn.net/275169-m-1426d1e2de8c0248ec3b15073819f8ec.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1e8-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Unser neuer Podcast: Deutsche Abgründe</h2>
+                    <time datetime="2020-08-31T14:19:02.552Z">31.08.2020</time>
+                </header>
+                <p><p>Der NSU und der rechte Terror in Deutschland - Eine achtteilige Podcast-Serie der SZ in Zusammenarbeit mit FYEO. Die erste Folge ist frei verfügbar, alle weiteren hören Sie mit SZ Plus.</p></p>
+                <a href="https://audio.podigee-cdn.net/267383-m-cb24e137203a2ed29d9ba7cffdb76727.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcastfdf220.podigee.io/s1t1-nsu-deutsche-abgruende/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>

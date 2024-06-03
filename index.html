@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <p>Alle SZ Plus Podcasts kostenlos hören! Direkt hier oder per RSS Feed in deiner Podcast-App</p>
+        <section class="flex">
+            
+            <a href="/feuerzone.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s_xhcoxeNU6Gi0qJJg9kCqLyKRmXRiVIeHrI2TMde7Vg=/https://main.podigee-cdn.net/uploads/u1617/f0a6a127-3db4-46cb-aab8-9a40ef5e4d86.jpg" alt="Feuerzone - Das System Rammstein">
+            </a>
+            
+            <a href="/schattenkloster.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sKvdzqgW2xN9CF8CmxLOqQFLUfY1q06ggUvt1UvbKXfY=/https://main.podigee-cdn.net/uploads/u1617/7fa57228-239d-45ea-be90-3b48f68c1f5e.jpg" alt="Im Schattenkloster – Chronik einer Gehirnwäsche">
+            </a>
+            
+            <a href="/daemon.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sKiAf7XWQp_vuHls7vHcZkLmrN0b3uK4EiXfa-U7pExI=/https://main.podigee-cdn.net/uploads/u1617/c902d802-ef0e-43d3-a77b-60217c1ba236.jpg" alt="Dämon">
+            </a>
+            
+            <a href="/soeder.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sa0SZcOjFqNksQG8KfRM9iM35ys39mkIcAgP8VPjEbs4=/https://main.podigee-cdn.net/uploads/u1617/7597b8f1-07a3-4346-a2a5-c54b50f590e8.jpg" alt="Söders Endspiel">
+            </a>
+            
+            <a href="/german-angst.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s7xPpIhPPraPl6MZaB2L-N8bcyaT7G4tZ9LEs6VWPYbw=/https://main.podigee-cdn.net/uploads/u1617/95527880-c06e-4159-a60a-266c3070da91.jpeg" alt="German Angst">
+            </a>
+            
+            <a href="/joni.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s2aE6Sq2HWMtb1tvPp026BVAE9BQwegG_XTxpRHijUQo=/https://main.podigee-cdn.net/uploads/u1617/5363138e-7c6a-4bd2-bf05-3c7ea1ec8ff8.jpg" alt="Wer ist Joni?">
+            </a>
+            
+            <a href="/alice-schwarzer.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sdqYqM4edQcPrtrXStVP4yfNQ03bCa3_EMkvs632A1MU=/https://main.podigee-cdn.net/uploads/u1617/635ef554-2995-4b0f-a4f0-28410294b9c4.jpg" alt="Who the f*** is Alice?">
+            </a>
+            
+            <a href="/kunst-zu-stehlen.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sVGc0roU0fZ_1wJUKLF-WemS1Aywon1lsuIFmD_TbtI8=/https://main.podigee-cdn.net/uploads/u1617/6873bbd2-0080-4e2c-ac18-24459c6608cf.jpg" alt="Grünes Gewölbe - Die Kunst zu stehlen">
+            </a>
+            
+            <a href="/vor-aller-augen.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sUA2wjrIiJ7W6d0VHsSuN4CuXKR8dyI0qx53Crh6PMac=/https://main.podigee-cdn.net/uploads/u1617/8e280790-eae2-4498-9fd9-b4ad73397c49.png" alt="Vor aller Augen">
+            </a>
+            
+            <a href="/71-schuesse.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sGZc8v3fh6LxJU7LKgzhQMZFbaubXoMCd6kohRQM2lmk=/https://main.podigee-cdn.net/uploads/u1617/224cf152-763c-4019-939d-41bf8e7351d0.jpg" alt="71 Schüsse">
+            </a>
+            
+            <a href="/mafiaprinzessin.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,shdjLVUzjzuXICv8dbVmEraZHLr_LgI39Kb0rshXXBz4=/https://main.podigee-cdn.net/uploads/u1617/ee53287f-7fe3-428b-bec0-278af2ba88d5.jpg" alt="Die Mafiaprinzessin">
+            </a>
+            
+            <a href="/inside-1860.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s3KJrW7VFLtk5lK1AklWbww5a-Myh8IJRP2bshtlcRZ0=/https://main.podigee-cdn.net/uploads/u1617/0f89af25-ad24-4537-a9c5-7b6cc3fb4a45.jpg" alt="Inside 1860">
+            </a>
+            
+            <a href="/ibiza.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sk3so-mk8WvOKxrf0WrW5rpLxELvfGuQGzC4FoitAnkY=/https://main.podigee-cdn.net/uploads/u1617/76e44abf-c380-43bc-820c-c6e4d293e10d.jpg" alt="Going to Ibiza">
+            </a>
+            
+            <a href="/deutsche-abgruende.html">
+                <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sA5NAnr5VREpeV3r3ZqVXy2fFJNlYjRiHkEQlYV2w6OU=/https://main.podigee-cdn.net/uploads/u1617/a100663e-ca8e-4756-93b5-622cecc0312b.jpg" alt="NSU-Podcast">
+            </a>
+            
+
+        </section>
+    </main>
+</body>

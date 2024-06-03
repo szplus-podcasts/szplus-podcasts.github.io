@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <hgroup>
+                                <h1>SZ Plus Podcasts</h1>
+                                <h2>aber kostenlos</h2>
+                            </hgroup>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="podcast-header">
+            <h2>Going to Ibiza</h2>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sk3so-mk8WvOKxrf0WrW5rpLxELvfGuQGzC4FoitAnkY=/https://main.podigee-cdn.net/uploads/u1617/76e44abf-c380-43bc-820c-c6e4d293e10d.jpg" alt="Going to Ibiza">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/ibiza.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p>Österreich, die Korruption und der Populismus. Eine Podcast-Serie der SZ in Zusammenarbeit mit der Audioplattform FYEO.<br><br>Das Ibiza-Video hat Österreich in eine politische Krise gestürzt. Schnell wurde nicht mehr nur über Heinz-Christian Strache und die FPÖ gesprochen, sondern darüber, wie versumpft das ganze Land ist. Österreichs Bundespräsident Alexander Van der Bellen sagte zwar: “So sind wir nicht. So ist Österreich nicht.” Aber was, wenn das nicht stimmt?<br><br>Eine Spurensuche von Straches Anfängen bis zum Aufstieg von Sebastian Kurz.</p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Das Update (9/9)</h2>
+                    <time datetime="2021-03-10T07:40:19.133Z">10.03.2021</time>
+                </header>
+                <p><p>Seit wir die achte Episode der Reihe aufgenommen haben, sind einige Monate vergangen. Wie gelingt die Aufarbeitung der Ibiza-Affäre seither, mitten in der Pandemie?</p></p>
+                <a href="https://audio.podigee-cdn.net/399688-m-aeef936b433b1361ca5dcaf9f5717b83.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/11-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Das Comeback (8/9)</h2>
+                    <time datetime="2021-02-24T08:45:26.994Z">24.02.2021</time>
+                </header>
+                <p><p>Nach der Ibiza-Affäre wird Heinz-Christian Strache aus der FPÖ ausgeschlossen. Aus der Politik will er sich deshalb aber nicht zurückziehen. Er startet einen Comeback-Versuch in Wien: da, wo er herkommt. Gegen die Partei, die er selbst so groß gemacht hat.</p></p>
+                <a href="https://audio.podigee-cdn.net/363520-m-84c5c54a85298a72c5050613e176656a.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/9-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der Schock (6/9)</h2>
+                    <time datetime="2021-02-17T16:25:01.735Z">17.02.2021</time>
+                </header>
+                <p><p>Als SZ und Spiegel das Ibiza-Video veröffentlichen, steht Österreich erst einmal unter Schock. Aber wenig später ist die türkis-blaue Regierung schon Geschichte. Die Öffentlichkeit beginnt, noch einmal ganz anders auf die Arbeit des Kabinetts Kurz I zu schauen. Wurden Dinge umgesetzt, von denen Heinz-Christian Strache auf Ibiza gesprochen hat?</p></p>
+                <a href="https://audio.podigee-cdn.net/363518-m-0123f7c3da0ecdb390f47e8961cf3342.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/7-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der neue Stil (5/9)</h2>
+                    <time datetime="2021-02-12T11:25:28.537Z">12.02.2021</time>
+                </header>
+                <p><p>Worauf Heinz-Christian Strache 2017 auf Ibiza noch hofft, wird wenig später wahr: Er wird Teil der Bundesregierung. Das rechtskonservative Bündnis zwischen ihm und Sebastian Kurz setzt nach außen hin auf Harmonie. Doch hinter den Kulissen beginnt es gewaltig zu knirschen.</p></p>
+                <a href="https://audio.podigee-cdn.net/363515-m-9d6e0199a93ddfced3882a6781071bfd.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der Sebastian (4/9)</h2>
+                    <time datetime="2021-02-04T09:05:57.380Z">04.02.2021</time>
+                </header>
+                <p><p>Heinz-Christian Strache wird immer erfolgreicher. Doch gerade auf Bundesebene will keine Partei mit ihm koalieren. Bis 2017 die Karten neu gemischt werden, weil Sebastian Kurz zum Chef der konservativen ÖVP wird. Warum stellt gerade er eine Chance für Strache dar?</p></p>
+                <a href="https://audio.podigee-cdn.net/363511-m-07a883d9fad4577ba9ebfa5cd3ccabe7.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der gute Kamerad (3/9)</h2>
+                    <time datetime="2021-02-04T07:00:37.022Z">04.02.2021</time>
+                </header>
+                <p><p>Lange Zeit steht Heinz-Christian Strache in Jörg Haiders Schatten - doch dann dreht sich das Blatt. Der frühere Schüler fordert seinen Lehrer heraus. Er führt die FPÖ wieder zu ungeahnter Größe - und macht sie selbst für die AfD zum Vorbild. Was macht ihn persönlich so erfolgreich?</p></p>
+                <a href="https://audio.podigee-cdn.net/363509-m-29cf2c97a66bab87d402a7333bb8a9d5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Die Lehren (7/9)</h2>
+                    <time datetime="2021-02-03T09:30:38.996Z">03.02.2021</time>
+                </header>
+                <p><p>Das Ibiza-Video hält Österreich den Spiegel vor – und immerhin wird bald nach der Veröffentlichung der „Ibiza-Untersuchungsausschuss“ eingesetzt. Ist der erfolgreich? Wird das Land etwas aus der Affäre lernen?</p></p>
+                <a href="https://audio.podigee-cdn.net/363519-m-2a0851df75ee1c9ca2bcf84b29492d25.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/8-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Das Video (1/9)</h2>
+                    <time datetime="2021-01-21T15:15:21.367Z">21.01.2021</time>
+                </header>
+                <p><p>Im Sommer 2018 hat das SZ-Investigativteam Kontakt zu einer anonymen Quelle: Höchste Geheimhaltung. Es geht um die Regierung eines europäischen Staates und es gibt Videoaufnahmen, die eigentlich unglaublich sind.</p></p>
+                <a href="https://audio.podigee-cdn.net/363506-m-e4886b3fc44f44f919d40149477fb4b2.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der Popstar (2/9)</h2>
+                    <time datetime="2021-01-21T15:11:50.643Z">21.01.2021</time>
+                </header>
+                <p><p>Wie kann ein Politiker wie Heinz-Christian Strache so groß werden? Lange bevor Strache die politische Bühne betritt, erfindet ein anderer Österreicher den modernen Rechtspopulismus: Jörg Haider. Wie ebnet er den Weg für Straches späteren Aufstieg?</p></p>
+                <a href="https://audio.podigee-cdn.net/363507-m-f0eb8283cbbb7cf497f0bdc9b4a89c0b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trailer</h2>
+                    <time datetime="2021-01-19T13:30:38.247Z">19.01.2021</time>
+                </header>
+                <p><p></p></p>
+                <a href="https://audio.podigee-cdn.net/363648-m-819a78068b8124340841f3e6e774c028.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://podcast287841.podigee.io/10-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <hgroup>
+                                <h1>SZ Plus Podcasts</h1>
+                                <h2>aber kostenlos</h2>
+                            </hgroup>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="podcast-header">
+            <h2>Feuerzone - Das System Rammstein</h2>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s_xhcoxeNU6Gi0qJJg9kCqLyKRmXRiVIeHrI2TMde7Vg=/https://main.podigee-cdn.net/uploads/u1617/f0a6a127-3db4-46cb-aab8-9a40ef5e4d86.jpg" alt="Feuerzone - Das System Rammstein">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/feuerzone.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p>Vor einem Jahr erschüttern die Recherchen zum “Fall Rammstein” von Süddeutscher Zeitung und NDR die Musikwelt: Mehrere Frauen berichten von sexualisierter Gewalt und Machtmissbrauch durch den Sänger Till Lindemann.  <br><br>Wie konnte es so weit kommen – und was ist seitdem passiert?  <br><br>Die SZ-Journalisten Lena Kampf und Jakob Biazza erzählen in dieser Podcast-Serie alle Hintergründe: Erstmals kommen die Betroffenen ausführlich zu Wort, dazu Experten aus der Popbranche und Wegbegleiter der Band. Warum spaltet der Fall das ganze Land? Stimmt es, dass sich manche Stars schier alles erlauben können? Und wie muss sich unser Umgang mit #MeToo jetzt verändern?  <br><br>Das ist die Geschichte von Männern, die berühmt wurden, weil sie Grenzen überschritten. Und von unbekannten Frauen, die nicht mehr schweigen wollten.  <br><br>ab 1. Juni – Folge 1+2 <br>ab 13. Juni – Folge 3<br>ab 20. Juni – Folge 4<br>ab 27. Juni – Folge 5<br>ab 4. Juli. – Folge 6<br>ab 11. Jul. – Folge 7</p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Die perfekteste deutsche Maschine (2/7)</h2>
+                    <time datetime="2024-05-31T22:01:00.000Z">31.05.2024</time>
+                </header>
+                <p><p>Wie wurde aus sechs DDR-Punks ein weltweites Kulturphänomen? Und was haben die Anfänge von Rammstein mit den Vorwürfen zu tun, die heute gegen die Band erhoben werden?</p></p>
+                <a href="https://audio.podigee-cdn.net/1486956-m-f484c183c7444c62d58f272583c60021.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://feuerzone.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Afterparty (1/7)</h2>
+                    <time datetime="2024-05-29T09:50:09.000Z">29.05.2024</time>
+                </header>
+                <p><p>Der Fall Rammstein beginnt mit einem Posting der Nordirin Shelby Lynn. Ein Jahr später kann sie nicht glauben, was sie losgetreten hat. Aber: Macht die Band einfach so weiter wie immer?</p></p>
+                <a href="https://audio.podigee-cdn.net/1484231-m-912e9ed8a6f81f8939dc5d320f3eeef3.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://feuerzone.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trailer: Feuerzone - Das System Rammstein</h2>
+                    <time datetime="2024-05-29T09:46:04.736Z">29.05.2024</time>
+                </header>
+                <p><p>Feuerzone - Das System Rammstein und der Machtmissbrauch in der Musik. Eine Podcast-Serie der Süddeutschen Zeitung mit 7 Episoden. Folge 1 kostenlos ab 1. Juni 2024, alle weiteren Folgen mit SZ-Plus hören.</p></p>
+                <a href="https://audio.podigee-cdn.net/1484229-m-0cf2cb0db082030d381236056a79cfd7.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://feuerzone.podigee.io/t1-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>

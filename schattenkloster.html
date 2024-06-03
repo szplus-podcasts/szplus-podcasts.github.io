@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-cover {
+                margin-left: 0;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index:2;
+            position:sticky;
+            top:0;
+            -webkit-backdrop-filter:blur(1rem);
+            backdrop-filter:blur(1rem);
+            background-color:var(--pico-background-color);
+            transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-bottom-color:var(--pico-muted-border-color);
+            box-shadow:var(--pico-card-box-shadow)
+        }
+
+        .flex {
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction:column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <hgroup>
+                                <h1>SZ Plus Podcasts</h1>
+                                <h2>aber kostenlos</h2>
+                            </hgroup>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="podcast-header">
+            <h2>Im Schattenkloster – Chronik einer Gehirnwäsche</h2>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sKvdzqgW2xN9CF8CmxLOqQFLUfY1q06ggUvt1UvbKXfY=/https://main.podigee-cdn.net/uploads/u1617/7fa57228-239d-45ea-be90-3b48f68c1f5e.jpg" alt="Im Schattenkloster – Chronik einer Gehirnwäsche">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/schattenkloster.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p>In einer kalten Novembernacht flieht Tom aus dem Kloster. Ob er seine Frau Jana und die Kinder wiedersehen wird, weiß er nicht. Aber er muss raus aus der Gemeinschaft, zu der er mit seiner Familie gezogen war. Tom erträgt es nicht mehr, wie die Mitglieder von “Go&Change” sich an ihre Grenzen bringen und daran zerbrechen.<br><br>"Go&Change” verspricht eine “Kultur der Liebe”. Doch mit der Zeit ist etwas gekippt. Aus einer Gruppe von Freunden wurde eine sogenannte Psychogruppe – mit zwei Männern an der Spitze, die alle manipulieren und körperlich und psychisch fertig machen. Wie kann es passieren, dass Menschen ihr Leben komplett in die Hände eines anderen legen? Und wie kann Tom seine Familie da rausholen?<br><br>Reporter des SZ-Magazins erfahren von Aussteigern, wie der “Guru” die Bewohner an das Leben im Kloster bindet und wie schnell der Grat zwischen Tätern und Opfern verschwimmen kann.<br><br>Eine Podcast-Serie des SZ-Magazins in Zusammenarbeit mit Audible<br><br>Neue Folgen erscheinen ab 16 Uhr am:  <br>8. Februar: Folge 1+2 <br>15. Februar: Folge 3 <br>22. Februar: Folge 4<br>29. Februar: Folge 5<br>7. März: Folge 6<br>14. März: Folge 7<br>21. März: Folge 8</p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Was bleibt (8/8)</h2>
+                    <time datetime="2024-03-21T14:30:00.000Z">21.03.2024</time>
+                </header>
+                <p><p>Im Kloster eskaliert die Situation. Wieder kommen Menschen im Klosterumfeld zu Schaden. Jetzt sind auch die Behörden alarmiert. Es gibt eine Verhaftung. Lässt sich die Gruppe stoppen? Und was wird aus Tom und Jana?</p></p>
+                <a href="https://audio.podigee-cdn.net/1343806-m-b5814595a2a4df5e94426ec70158bf87.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/9-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Kais Paradies (7/8)</h2>
+                    <time datetime="2024-03-14T14:30:00.000Z">14.03.2024</time>
+                </header>
+                <p><p>Die Journalisten Eva Hoffmann und Patrick Bauer begeben sich auf die Spuren des rätselhaften Anführers der Gruppe. In seiner Heimatstadt machen sie eine überraschende Entdeckung.</p></p>
+                <a href="https://audio.podigee-cdn.net/1343805-m-cd475f25a6d8531ed0326abb7cbc8614.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/8-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Die Aussätzigen (6/8)</h2>
+                    <time datetime="2024-03-07T14:30:00.000Z">07.03.2024</time>
+                </header>
+                <p><p>Die Situation bei Go&amp;Change ist angespannt. Jana und der Guru bitten Tom, zurückzukommen. Ist das eine Falle oder eine zweite Chance?</p></p>
+                <a href="https://audio.podigee-cdn.net/1343802-m-c8d69931ac9fe5deab52352212f4840b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/7-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Das Safeword (5/8)</h2>
+                    <time datetime="2024-02-29T14:30:00.000Z">29.02.2024</time>
+                </header>
+                <p><p>Sexualität steht in der Gruppe oft im Mittelpunkt. Der vermeintliche Guru bestimmt, wer mit wem wie zu schlafen hat, es wird auch über persönliche Grenzen gegangen. Die Geschehnisse eskalieren. Tom entscheidet: Mir reicht’s.</p></p>
+                <a href="https://audio.podigee-cdn.net/1343801-m-706218d226366ed3fbcd4c8eee4bd6a3.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/6-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Zwei Todesfälle (4/8)</h2>
+                    <time datetime="2024-02-22T14:30:00.000Z">22.02.2024</time>
+                </header>
+                <p><p>Tom und Jana erwarten ihr zweites Kind, als zwei Katastrophen die Gemeinschaft erschüttern: Innerhalb kurzer Zeit kommen im Kloster zwei Kinder ums Leben. Warum sehen die Behörden nur zu?</p></p>
+                <a href="https://audio.podigee-cdn.net/1343799-m-34abbfdc3df986f99c7ff51c89724ce9.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Eistee-Privilegien (3/8)</h2>
+                    <time datetime="2024-02-15T15:00:00.000Z">15.02.2024</time>
+                </header>
+                <p><p>Tom und Jana ziehen ins Kloster, obwohl Tom ein schlechtes Bauchgefühl hat. Schnell lernen sie die obskuren Regeln und den extremen Gruppenzwang der Gemeinschaft kennen. Warum machen alle mit?</p></p>
+                <a href="https://audio.podigee-cdn.net/1343797-m-731d5a094a4d7ecf0937a6feab87cd33.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Horrortrip (2/8)</h2>
+                    <time datetime="2024-02-08T15:05:00.000Z">08.02.2024</time>
+                </header>
+                <p><p>Das Ehepaar Jana und Tom fahren zu einem Kennenlernwochenende der ungewöhnlichen Lebensgemeinschaft. Der Urlaub wird für Tom zu einer erschreckenden Erfahrung.</p></p>
+                <a href="https://audio.podigee-cdn.net/1343793-m-746bb4ea4779be3cb38671190d994741.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Sehnsucht (1/8)</h2>
+                    <time datetime="2024-02-08T15:00:00.000Z">08.02.2024</time>
+                </header>
+                <p><p>Tom und seine Frau Jana lernen eine ungewöhnliche WG kennen, die von einer Utopie träumt. Was die beiden nicht wissen: Die Gruppe steht im Verdacht, psychische und sexualisierte Gewalt auszuüben.</p></p>
+                <a href="https://audio.podigee-cdn.net/1343781-m-9c4548b87b950432933d387a554b1e18.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trailer</h2>
+                    <time datetime="2024-02-01T08:43:05.520Z">01.02.2024</time>
+                </header>
+                <p><p>Auf der Suche nach einem alternativen Lebensmodell ziehen Tom und Jana mit ihrem Kind zu einer Gemeinschaft in ein ehemaliges Kloster. Aber was nach einer Utopie für Selbstversorger klingt, führt zu Todesfällen und Missbrauch. Wer ist der mysteriöse Guru der Gruppe? Und schafft es die Familie wieder raus? Teaser der neuen Podcast-Serie des SZ-Magazins.</p></p>
+                <a href="https://audio.podigee-cdn.net/1343773-m-68ff536f50508131ddc5cd96d29b2bca.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://schattenkloster.podigee.io/t1-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
