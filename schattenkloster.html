@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SZ Podcasts</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         .podcast-header {
             display: flex;
@@ -60,13 +61,15 @@
             background-color:var(--pico-background-color);
             transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
             border-bottom-color:var(--pico-muted-border-color);
-            box-shadow:var(--pico-card-box-shadow)
+            box-shadow:var(--pico-card-box-shadow);
+            padding-bottom: 0;
         }
 
         .flex {
             display:flex;
             flex-wrap:wrap;
             gap:20px;
+            align-items: center;
         }
 
         @media (max-width: 750px) {
@@ -75,6 +78,9 @@
             }
         }
 
+        header hgroup {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -97,7 +103,10 @@
     </header>
     <main class="container">
         <div class="podcast-header">
-            <h2>Im Schattenkloster – Chronik einer Gehirnwäsche</h2>
+            <hgroup>
+                <h2>Im Schattenkloster – Chronik einer Gehirnwäsche</h2>
+                
+            </hgroup>
             <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sKvdzqgW2xN9CF8CmxLOqQFLUfY1q06ggUvt1UvbKXfY=/https://main.podigee-cdn.net/uploads/u1617/7fa57228-239d-45ea-be90-3b48f68c1f5e.jpg" alt="Im Schattenkloster – Chronik einer Gehirnwäsche">
         </div>
         <div class="rss-button-container">

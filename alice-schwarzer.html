@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SZ Podcasts</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         .podcast-header {
             display: flex;
@@ -60,13 +61,15 @@
             background-color:var(--pico-background-color);
             transition:border-top-color .4s ease-in-out,box-shadow .4s ease-in-out;
             border-bottom-color:var(--pico-muted-border-color);
-            box-shadow:var(--pico-card-box-shadow)
+            box-shadow:var(--pico-card-box-shadow);
+            padding-bottom: 0;
         }
 
         .flex {
             display:flex;
             flex-wrap:wrap;
             gap:20px;
+            align-items: center;
         }
 
         @media (max-width: 750px) {
@@ -75,6 +78,9 @@
             }
         }
 
+        header hgroup {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -97,7 +103,12 @@
     </header>
     <main class="container">
         <div class="podcast-header">
-            <h2>Who the f*** is Alice?</h2>
+            <hgroup>
+                <h2>Who the f*** is Alice?</h2>
+                
+                  <h3>Wie Deutschlands größte Feministin die Frauen verlor</h3>
+                
+            </hgroup>
             <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sdqYqM4edQcPrtrXStVP4yfNQ03bCa3_EMkvs632A1MU=/https://main.podigee-cdn.net/uploads/u1617/635ef554-2995-4b0f-a4f0-28410294b9c4.jpg" alt="Who the f*** is Alice?">
         </div>
         <div class="rss-button-container">
