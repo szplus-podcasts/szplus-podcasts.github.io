@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Deutsch-Amerikanische Freundschaft</h2>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s3W_KZFf8ek9QUfMV7uuWFN-ZUYDwPYvMXJcg2NT3FbI=/https://main.podigee-cdn.net/uploads/u1617/f33923a3-a1fa-484a-94f2-ad575cdddc30.jpg" alt="Deutsch-Amerikanische Freundschaft">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/us-wahl.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Was wird nur aus dem transatlantischen Verhältnis? Jahrzehntelang waren die USA für Deutschland so etwas wie der große Bruder in der Welt. Und Deutschland einer ihrer wichtigsten Partner in Europa. Aber spätestens seit Donald Trumps zweiter Amtszeit ist alles anders. Und nur selten stand außenpolitisch so viel auf dem Spiel. </p><p>Genau das beobachten gerade zwei SZ-Reporter und alte Freunde von beiden Seiten des Atlantiks aus: Nach mehr als sieben Jahren als Korrespondent in New York ist Christian Zaschke im politisch aufgewühlten Berlin angekommen und Boris Herrmann ist von dort gerade nach New York aufgebrochen, er ist der neue US-Korrespondent. Die beiden haben also die Seiten gewechselt. </p><p>Ihre Freundschaft hält auch über den Atlantik, aber wie geht es weiter mit der Freundschaft zwischen Deutschland und den USA? Und was bedeutet das für uns alle?  Davon berichten Boris Herrmann und Christian Zaschke in ihrem neuen Podcast “Deutsch Amerikanische Freundschaft” – ganz nah dran am Geschehen unter Präsident Trump und Fast-Kanzler Merz und ohne in diesen ernsten Zeiten den Humor zu verlieren. </p><p>Für ihre Podcast-Serie “Old Man Trump” sind Zaschke und Herrmann vor Trumps Wiederwahl quer durch die USA gereist, von der Ostküste bis zur Westküste, und haben sich mit der Frage beschäftigt, wie dieser größte Lügner von Amerika so weit kommen konnte. Aber jetzt müssen sie sich fragen, was er und seine neuen Verbündeten als nächstes vorhaben. </p><p>Jeden zweiten Donnerstag erscheint eine neue Folge. Die ersten beiden Folgen sind kostenlos, alle weiteren können Sie mit SZ Plus hier, in der weißen SZ-App und auf www.sz.de/freundschaft hören. </p><p>Sie haben Fragen oder Anregungen? Schreiben Sie uns an podcast@sz.de</p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Trailer zum Podcast Deutsch-Amerikanische Freundschaft</h2>
+                    <time datetime="2024-02-27T00:01:39+00:00">27.02.2024</time>
+                </header>
+                <p><p>Die US-Wahl ist vorbei, Donald Trump ist Präsident der USA. Und auch die Bundestagswahl in Deutschland ist vorbei – und bald wird wahrscheinlich ein Kanzler Merz mit einem Präsidenten Trump umgehen müssen. Ganz neue politische Konstellation also. </p>
+<p>Und deswegen gibt es jetzt auch hier eine neue Konstellation. Boris Herrmann, SZ-Korrespondent in New York, und Christian Zaschke aus der SZ-Parlamentsredaktion in Berlin übernehmen diesen Kanal. Die beiden haben vor Kurzem die Arbeitsplätze getauscht, aber wollen ihre deutsch-amerikanische Freundschaft weiter pflegen. </p>
+<p>Sie sprechen jeden <strong>zweiten Donnerstag</strong> über die politischen Entwicklungen in den USA und Deutschland. Über transatlantische Beziehungen und Beziehungskrisen. Über kulturelle Gemeinsamkeiten und Unterschiede. Und auch einfach über das Leben dies- und jenseits des Atlantiks.</p>
+<p>Die ersten beiden Folgen sind kostenlos, alle weiteren können Sie mit SZ Plus auf sz.de/freundschaft, in der <a href="https://app.adjust.com/1l5om7o7_1l6tpacj?fallback=https%3A%2F%2Fprodukte.sueddeutsche.de%2Fnachrichten-app%2F%3Futm_source%3Dlp-freundschaft%26utm_medium%3Dteaser_em-fi%26utm_campaign%3Dnachrichten-app_podcast%26utm_content%3Dfreundschaft">weißen SZ-App</a> und auf <a href="https://open.spotify.com/show/4hSKCQOjvnqudbAB88su64">Spotify</a> hören.</p></p>
+                <a href="https://audio.podigee-cdn.net/1384090-m-ed2cfc05f1894588b941615c006638da.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/99-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Toast Hawaii</h2>
+                    <time datetime="2025-04-17T00:00:50+00:00">17.04.2025</time>
+                </header>
+                <p><p>In der vierten Folge der „Deutsch-Amerikanischen Freundschaft“ sprechen Christian Zaschke, SZ-Korrespondent in Berlin, und Boris Herrmann, SZ-Korrespondent in New York, über die Unterwanderung der Republikanischen Partei durch die Maga-Bewegung.</p>
+<p>Während seines Urlaubs trifft Boris Herrmann in Richmond, Virginia Vertreter der „Pro Life“-Initiative, die Abtreibungen mit der Gottlosigkeit des Sklavenhandels vergleichen. Unterdessen plädiert Donald Trump dafür, die Denkmäler von Südstaaten-Generälen wieder aufzustellen.</p>
+<p>In Berlin blickt Christian Zaschke wiederum mit dem hoffnungsvollen Blick des Rückkehrers auf die deutsche Zukunft. Beide Korrespondenten sind aber doch verwundert, dass ausgerechnet der Politiker, der eher für skurrile Wortakrobatik bekannt ist, die Koalitionsverhandlungen von SPD und Union vorangetrieben haben soll. Und dann geht es noch um ein Rezept, das trotz seines Namens nicht aus dem westlichsten US-Bundesstaat stammt.</p>
+<p>Moderation und Redaktion: Boris Herrmann und Christian Zaschke</p>
+<p>Redaktion: Helen Krueger-Janson</p>
+<p>Produktion: Benjamin Markthaler</p>
+<p>Sounddesign: Julia Ongyerth</p>
+<p>Mitarbeit: Carlo Sarsky</p>
+<p>Cover: Timo Lenzen</p>
+<p>So können Sie die "Deutsch-Amerikanische Freundschaft" hören:</p>
+<p>Der Podcast erscheint jeden zweiten Donnerstag um 17 Uhr. Alle Folgen finden Sie unter sz.de/freundschaft. Die ersten beiden Folgen sind kostenlos, alle weiteren können Sie mit SZ-Plus hören. Verpassen Sie keine Folge und abonnieren Sie die „Deutsch-Amerikanische Freundschaft“ bei Apple Podcast, Spotify und in der SZ-Nachrichten-App. Eine Übersicht über all unsere Podcasts finden Sie unter sz.de/podcast.</p>
+<p>Sie haben Fragen oder Anregungen? Dann schreiben Sie uns: podcast@sz.de.</p></p>
+                <a href="https://audio.podigee-cdn.net/1878180-m-926f4ebcfc055a2ba4b7ad147d55e883.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/50-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Raumgreifender Raumanzug</h2>
+                    <time datetime="2025-04-03T00:00:49+00:00">03.04.2025</time>
+                </header>
+                <p><p>In der dritten Folge ihres neuen Podcasts „Deutsch-Amerikanische Freundschaft“ sprechen Christian Zaschke, SZ-Korrespondent in Berlin, und Boris Herrmann, SZ-Korrespondent in New York, über die erschwerten Einreisebedingungen in die USA – die Herrmann zuletzt selbst beobachten konnte.</p>
+<p>Abseits möglicher Feinde von außen, richtet sich der Blick der US-Regierung auch weiter nach innen. Für Zaschke und Herrmann steht dabei ganz besonders ein Dekret von Donald Trump im Fokus, das die US-Geschichte umdeuten soll. Was ist nur aus dem Land geworden, das man einst für seine Mondlandung bewundert hat? Christian Zaschke erinnert das an seine alte Schülerzeitung "Papermoon".</p>
+<p>Dagegen wirkt eine Pressekonferenz der Regierung wie eine wirkliche Übung der Pressefreiheit. Und da musste Zaschke auch gleich nachfragen, wie transparent die deutschen Ämter in der kommenden Legislaturperiode wirklich bleiben sollen.</p>
+<p>Moderation und Redaktion: Boris Herrmann und Christian Zaschke</p>
+<p>Redaktion: Helen Krueger-Janson</p>
+<p>Produktion: Carlo Sarsky</p>
+<p>Sounddesign: Julia Ongyerth</p>
+<p>Cover: Timo Lenzen</p>
+<p>Mitarbeit: Clara Andersen</p>
+<p>So können Sie die „Deutsch-Amerikanische Freundschaft“ hören:</p>
+<p>Der Podcast erscheint jeden zweiten Donnerstag um 17 Uhr. Alle Folgen finden Sie unter sz.de/freundschaft. Die ersten beiden Folgen sind kostenlos, alle weiteren können Sie mit SZ-Plus hören. Verpassen Sie keine Folge und abonnieren Sie die „Deutsch-Amerikanische Freundschaft“ bei Apple Podcast, Spotify und in der SZ-Nachrichten-App. Eine Übersicht über all unsere Podcasts finden Sie unter sz.de/podcast.</p>
+<p>Sie haben Fragen oder Anregungen? Dann schreiben Sie uns: podcast@sz.de.</p></p>
+                <a href="https://audio.podigee-cdn.net/1858373-m-2b3492b8c00db255b7c582628ea36154.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/49-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Rechts von John Wayne</h2>
+                    <time datetime="2025-03-20T00:00:47+00:00">20.03.2025</time>
+                </header>
+                <p><p>In der zweiten Folge ihres neuen Podcasts „Deutsch-Amerikanische Freundschaft“ diskutieren Christian Zaschke, SZ-Korrespondent in Berlin, und Boris Herrmann, SZ-Korrespondent in New York, warum es in den USA keine nennenswerte Protestbewegung gegen Donald Trump und seinen Angriff auf die Demokratie gibt.</p>
+<p>In den Bergen von Colorado trifft Boris Herrmann eine 97-Jährige, die so wütend ist, dass sie nicht mehr tatenlos zusehen will. Und während Friedrich Merz dort um einen demokratischen Konsens gegen die Fliehkräfte von rechts ringt, stößt Christian Zaschke im Berliner Bundestag auf das Rätsel des „angeketteten Getränkeautomaten“.</p>
+<p>Annalena Baerbocks neuer Job in New York sorgt für großen Dissens in der "Deutsch-Amerikanischen Freundschaft", aber zum Glück gibt es dann auch gute Nachrichten für das transatlantische Verhältnis.</p>
+<p>Moderation und Redaktion: Boris Herrmann und Christian Zaschke
+Redaktion: Patrick Bauer
+Produktion: Carlo Sarsky
+Sounddesign: Julia Ongyerth
+Cover: Timo Lenzen
+Mitarbeit: Clara Andersen, Antonia Franz</p>
+<p>Den Podcast von Boris Herrmann und Christian Zaschke über "Old Man Trump" können Sie <a href="https://www.sueddeutsche.de/projekte/artikel/politik/podcast-donald-trump-luegner-amerika-wahrheit-us-wahl-2024-e958028/">hier</a> hören.</p>
+<p>Zum Weiterlesen: </p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/donald-trump-usa-republikaner-colorado-protest-e239051/">Boris Herrmanns Besuch einer 97-Jährigen in Colorado</a></p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/friedrich-merz-bundestag-grundgesetz-verteidigung-die-gruenen-e852278/">Christian Zaschkes Bericht aus dem Bundestag </a></p></p>
+                <a href="https://audio.podigee-cdn.net/1839684-m-cba90f1e0f1e2ac9675594e890d88869.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/47-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der offene Kanal</h2>
+                    <time datetime="2025-03-06T00:00:46+00:00">06.03.2025</time>
+                </header>
+                <p><p>In der ersten Folge ihres neuen Podcasts „Deutsch-Amerikanische Freundschaft“ sprechen Christian Zaschke, SZ-Korrespondent in Berlin, und Boris Herrmann, SZ-Korrespondent in New York, über die ersten Wochen unter Donald Trump und die kommenden Jahre unter Friedrich Merz. Ist das transatlantische Verhältnis noch zu retten? Wie schafft es Trump, sich jeden Tag aufs Neue selbst in den Schatten zu stellen – und worum geht es ihm eigentlich? Außerdem ist da noch die Sache mit der Wohnung, die Boris Herrmann aufgrund von Trumps Wiederwahl räumen muss. Und in Deutschland hadert Christian Zaschke auch mit dem Immobilienmarkt. </p>
+<p>Moderation und Redaktion: Boris Herrmann und Christian Zaschke
+Redaktion: Patrick Bauer
+Produktion: Carlo Sarsky
+Sounddesign: Julia Ongyerth
+Cover Illustration: Timo Lenzen
+Mitarbeit: Antonia Franz und Helen Krueger-Janson</p>
+<p>Den Podcast von Boris Herrmann und Christian Zaschke über "Old Man Trump" können Sie <a href="https://www.sueddeutsche.de/projekte/artikel/politik/podcast-donald-trump-luegner-amerika-wahrheit-us-wahl-2024-e958028/">hier</a> hören.</p></p>
+                <a href="https://audio.podigee-cdn.net/1815293-m-3642827f3fc40cbf3390f660995ca869.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/46-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Neuer SZ-Podcast &#34;Deutsch-Amerikanische Freundschaft&#34;</h2>
+                    <time datetime="2025-03-04T00:00:45+00:00">04.03.2025</time>
+                </header>
+                <p><p>Auf diesem Kanal passiert ab 6. März etwas Neues. Die US-Wahl ist vorbei, Donald Trump ist Präsident der USA. Und auch die Bundestagswahl in Deutschland ist vorbei – und bald wird wahrscheinlich ein Kanzler Merz mit einem Präsidenten Trump umgehen müssen. Ganz neue politische Konstellation also. </p>
+<p>Und deswegen gibt es jetzt auch hier eine neue Konstellation. Boris Herrmann, SZ-Korrespondent in New York, und Christian Zaschke aus der SZ-Parlamentsredaktion in Berlin übernehmen diesen Kanal. Die beiden haben vor Kurzem die Arbeitsplätze getauscht, aber wollen ihre deutsch-amerikanische Freundschaft weiter pflegen. </p>
+<p>Sie sprechen jeden <strong>zweiten Donnerstag</strong> über die politischen Entwicklungen in den USA und Deutschland. Über transatlantische Beziehungen und Beziehungskrisen. Über kulturelle Gemeinsamkeiten und Unterschiede. Und auch einfach über das Leben dies- und jenseits des Atlantiks.</p>
+<p>Die ersten beiden Folgen sind kostenlos, alle weiteren können Sie mit SZ Plus auf sz.de/freundschaft, in der <a href="https://app.adjust.com/1l5om7o7_1l6tpacj?fallback=https%3A%2F%2Fprodukte.sueddeutsche.de%2Fnachrichten-app%2F%3Futm_source%3Dlp-freundschaft%26utm_medium%3Dteaser_em-fi%26utm_campaign%3Dnachrichten-app_podcast%26utm_content%3Dfreundschaft">weißen SZ-App</a> und auf <a href="https://open.spotify.com/show/4hSKCQOjvnqudbAB88su64">Spotify</a> hören.</p></p>
+                <a href="https://audio.podigee-cdn.net/1815292-m-492323d24221086029e9c81c20a6d470.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/45-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ängste schüren und Fakten schaffen: Trumps erste Tage im Amt</h2>
+                    <time datetime="2025-01-24T00:00:44+00:00">24.01.2025</time>
+                </header>
+                <p><p>Seit Montag ist der 45. Präsident der USA auch der 47. Präsident: Im Kapitol in Washington wurde Donald Trump vereidigt. Dort hielt er seine offizielle Antrittsrede – und anschließend eine inoffizielle vor seinen Anhängern. Dabei waren zwei verschiedene Trumps zu beobachten, der Staatsmann und der Entertainer. </p>
+<p>In dieser letzten Ausgabe von 2Auf den Punkt: Die US-Wahl" geht es um die beiden Reden und die Botschaften, die Trump damit an die US-Amerikaner und -Amerikanerinnen sendet. Zudem hat der neue Präsident schon in den ersten Tagen zahlreiche Dekrete unterzeichnet, sie betreffen unter anderem die Bereiche Migration, Klima, Gesundheit und Diversität. Welche konkreten Auswirkungen haben die Entscheidungen schon jetzt, welche könnten noch folgen? Und: Formiert sich womöglich doch schon ein erster Widerstand gegen die neue Trump-Regierung?</p>
+<p><strong>Zum Weiterlesen und -hören:</strong></p>
+<p><a href="https://www.sueddeutsche.de/politik/nachrichten-podcast-trump-inauguration-li.3186592">Hier</a> geht es zur Ausgabe von “Auf den Punkt” vom Montag mit Eindrücken des SZ-Korrespondenten Peter Burghardt unmittelbar nach Trumps Antrittsrede. </p>
+<p>Peter Burghardt und Fabian Fellmann haben die Vereidigung in Washington auch in einem Text festgehalten, den Sie <a href="https://www.sueddeutsche.de/politik/donald-trump-inauguration-amtseid-li.3182735">hier </a>lesen können. </p>
+<p><a href="https://www.sueddeutsche.de/politik/usa-trump-dekrete-widerstand-angriff-grundrechte-li.3187289">Hier</a> finden Sie einen Text von Peter Burghardt zu den Auswirkungen der Präsidialdekrete im Bereich Migration. </p>
+<p>Über die Begnadigungen der Täter des 6. Januar 2021 und die erneute Präsenz rechtsradikaler Milizen auf den Straßen der US-Hauptstadt <a href="https://www.sueddeutsche.de/politik/kapitol-stuermer-straftaeter-begnadigung-trump-li.3187436">schreibt Fabian Fellmann</a>. </p>
+<p>SZ-Wissen-Redakteurin Marlene Weiß <a href="https://www.sueddeutsche.de/wissen/usa-trump-pariser-klimaabkommen-klimawandel-li.3187059">fasst zusammen</a>, was der Ausstieg der USA aus dem Pariser Klimaabkommen bedeutet. </p>
+<p>Berit Uhlmann, ebenfalls aus dem Ressort “Wissen”, <a href="https://www.sueddeutsche.de/gesundheit/trump-austritt-who-auswirkungen-gesundheit-li.3186138">schreibt </a>über die Konsequenzen des Rückzugs der USA aus der Weltgesundheitsorganisation. </p>
+<p>Alle weiteren Texte und Podcasts über die USA und Trumps zweite Amtszeit finden Sie weiterhin auf der<a href="https://www.sueddeutsche.de/thema/USA"> USA-Themenseite der SZ.</a> </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 23.01.2025 um 11 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche</p>
+<p>Produktion: Imanuel Pedersen</p>
+<p>Zusätzliches und zitiertes Audiomaterial über ABC News, WAAY 31 News, WKYC Channel 3, Fox News und Washington National Cathedral.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere 
+exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1762210-m-a76b918013aba936f26801ada1669881.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/44-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Joe Bidens Abschied und sein gefährdetes Erbe</h2>
+                    <time datetime="2025-01-17T00:00:43+00:00">17.01.2025</time>
+                </header>
+                <p><p>Am Mittwoch hat Joe Biden im Oval Office seine offizielle Abschiedsrede an die Nation gehalten, nach einer über fünfzigjährigen politischen Karriere und einer Präsidentschaft, die von seinem Vorgänger und seinem Nachfolger Donald Trump überschattet wurde. Biden entschied sich, weniger auf seine Erfolge zu verweisen und stattdessen eine deutliche Warnung auszusprechen – vor einer "neuen amerikanischen Oligarchie". </p>
+<p>Wie Biden versucht, sein Erbe zu sichern, wie Trump und sein Team es bereits torpedieren und wieso Trumps umstrittenster Kabinettskandidat Pete Hegseth sehr wahrscheinlich vom Senat als Verteidigungsminister bestätigt werden wird, darum geht es in dieser Folge von "Auf den Punkt: Die US-Wahl". </p>
+<p><a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-biden-rede-trump-usa-li.3184234">Hier</a> können Sie die "Auf den Punkt"-Folge hören, in der US-Korrespondent Fabian Fellmann eine Bilanz der Biden-Präsidentschaft zieht.  <a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-biden-rede-trump-usa-li.3184234">https://www.sueddeutsche.de/politik/podcast-nachrichten-biden-rede-trump-usa-li.3184234</a> </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 17.01.2024 um 10 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Lars Langenau, Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Imanuel Pedersen</p>
+<p>Zusätzliches und zitiertes Audiomaterial über ABC News, The White House, C-SPAN und NBC News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere 
+exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1753952-m-f7da64a583fdce004c95fdc8b9f901b4.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/43-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trump und Musk: Geeint durch Allmachtsfantasien</h2>
+                    <time datetime="2025-01-10T00:00:42+00:00">10.01.2025</time>
+                </header>
+                <p><p>Am Dienstag hat Donald Trump in seinem Anwesen Mar-a-Lago in Florida eine Pressekonferenz gegeben, dort mit territorialen Ansprüchen auf Kanada, Grönland und den Panama-Kanal schockiert und sogar den Einsatz militärischer Gewalt nicht ausgeschlossen. Am Donnerstag hat Trumps enger Vertrauter Elon Musk auf X mit der AfD-Chefin Alice Weidel gesprochen und seine Wahlempfehlung für die in Teilen rechtsextreme Partei noch einmal bekräftigt. Bei beiden Veranstaltungen wurden die Grenzen des Sagbaren weit verschoben. </p>
+<p>Die beiden mächtigen Männer setzen auf die Strategie, mit rhetorischen Mitteln neue Fakten zu schaffen, gesellschaftlich und politisch. Wohin führt uns das? Und: Wie lange hält die unheilige Allianz zwischen Trump und Musk noch – wo Trump doch bekannt dafür ist, niemanden neben sich zu dulden, der ihn überstrahlt? Darum geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“.</p>
+<p><a href="https://www.sueddeutsche.de/kultur/hitler-kommunist-luegen-rechtsextremismus-li.3180187">Hier</a> können Sie die Freitagsausgabe von „Auf den Punkt“ hören, in der SZ-Redakteur Andrian Kreye Elon Musks Meinungsmacht und die Online-Strategie der Neuen Rechten analysiert. </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 10.01.2025, um 12 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Lars Langenau</p>
+<p>Produktion: Imanuel Pedersen
+Zusätzliches und zitiertes Audiomaterial über AP, The Telegraph, @ElonClipsX (X) und Guardian News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere 
+exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1745806-m-0627448f09b2de58898484ccda8c5a39.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/42-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Jahresrückblick: Ein wahnsinniges US-Wahljahr</h2>
+                    <time datetime="2025-01-03T00:00:41+00:00">03.01.2025</time>
+                </header>
+                <p><p>Als der Wahlkampf in den USA mit dem "Super Tuesday" im März 2024 in die heiße Phase gestartet ist, konnte niemand ahnen, wie ereignisreich die kommenden Monate werden würden: Donald Trump wurde beinahe Opfer eines Attentats, Joe Biden verpatzte eine Debatte und wurde zum Rückzug gezwungen, Kamala Harris löste eine lange nicht gekannte, aber doch nur kurz währende Euphorie im Lager der Demokraten aus – und am Ende ging alles weniger knapp aus als das ganze Jahr über prognostiziert worden war. </p>
+<p>In unserem Jahresrückblick sprechen wir noch einmal über die prägendsten Momente dieses US-Wahljahres, wie es dazu gekommen ist und welche Konsequenzen sie auch noch in den kommenden Jahren haben werden. </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 13.12.2024 um 12 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Carolin Lenk</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über The White House (Youtube), MSNBC, CNN, FOX 5 Atlanta, AP, Sky News, PBS NewsHour, @Tim_Walz (X), ABC News, FOX 9 Minneapolis-St.Paul, The Telegraph, XXX und @NoahGarfinkel (X).</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1724770-m-fd83d6ec5096938def263e25c5322f30.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/41-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Warum Trump schon wie ein Präsident behandelt wird</h2>
+                    <time datetime="2024-12-13T00:00:40+00:00">13.12.2024</time>
+                </header>
+                <p><p>Eine Reise zur Wiedereröffnung der Kathedrale Notre-Dame in Paris wäre eigentlich ein Termin für einen amtierenden US-Präsidenten gewesen. Doch vergangenes Wochenende begrüßte Emmanuel Macron dort nicht Joe Biden, sondern Donald Trump, der sich auch mit dem ebenfalls angereisten Wolodymyr Selenskyj traf. Insgesamt wird Trump vielerorts – nicht zuletzt in Washington – so behandelt, als sei er bereits im Amt. Warum? Und was macht Joe Biden eigentlich aktuell, um das Erbe seiner Regierung womöglich doch noch zu sichern?</p>
+<p>Darum geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“. Außerdem hat Trump sein erstes Fernseh-Interview seit der Wahl gegeben – und schürt dort Unsicherheiten.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 12.12.2024 um 11:30 Uhr.</p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter
+Redaktion: Ann-Marlen Hoolt
+Produktion: Carolin Lenk, Imanuel Pedersen</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Sky News, NBC News, @RonFilipowski (X) und gettrumpfragrances.com.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1714693-m-855177f25a86c30229cd816cc29cfcf1.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/40-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Zu „woke“ und zu abgehoben? Warum die Demokraten verloren haben</h2>
+                    <time datetime="2024-11-29T00:00:39+00:00">29.11.2024</time>
+                </header>
+                <p><p>Egal ob bei Afroamerikanern, Latinos, Asian Americans, jungen Wählern und Wählerinnen oder in der Arbeiterklasse: Bei allen Wählergruppen, die traditionell eigentlich Demokraten wählen, hat der Republikaner Donald Trump diesmal beachtliche Zugewinne geholt. </p>
+<p>Diese Entwicklung ist nicht neu, sondern hat schon 2016 – als Trump zum ersten Mal ins Weiße Haus gewählt wurde – eingesetzt. Das liegt unter anderem daran, dass Trumps Populismus nicht nur das Profil der Republikaner, sondern auch das der Demokraten grundlegend verändert hat. Wie hat sich das konkret auf die Kampagnen von Joe Biden und Kamala Harris ausgewirkt? Und wie könnte es in Zukunft für die Demokraten weitergehen? Darum geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“. </p>
+<p>Außerdem: Wieso die Strafverfahren gegen Trump wegen versuchten Wahlbetrugs und unterschlagener Geheimdokumente eingestellt werden, was es mit seinen Zollankündigungen auf sich hat und wie sein Social-Media-Kommunikationsstil auch seine kommende Präsidentschaft prägen wird.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 28.11.2024 um 14 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Lars Langenau</p>
+<p>Produktion: Julia Ongyerth</p>
+<p>Zusätzliches und zitiertes Audiomaterial über C-Span, ABC News, Pod Save America (Youtube), MSNBC, Donald J Trump (Youtube), CBS Boston und CNN. </p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1695904-m-68e942f938c03600e97f2d6aa58b10a5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/39-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trumps Außenpolitik: Was er vorhat – und mit wem</h2>
+                    <time datetime="2024-11-22T00:00:38+00:00">22.11.2024</time>
+                </header>
+                <p><p>Donald Trump nominiert weiterhin in Rekordzeit Personen für seine kommende Regierung. Darunter sind so erstaunliche Entscheidungen – etwa für den Impfgegner Robert F. Kennedy Jr. als Gesundheitsminister – dass Trumps Wahl für den Außenminister fast langweilig, mindestens aber sehr konventionell wirkt: Marco Rubio, Senator aus Florida, NATO-Befürworter, China-Falke und sicher kein Russland-Freund. </p>
+<p>Sehr umstritten ist hingegen, dass Trump den Fox-News-Moderator Pete Hegseth zum Verteidigungsminister machen will. Hegseth hat keinerlei Vorerfahrung in einem politischen Amt, ist bekannt für seine harsche Kritik am Pentagon, frauenfeindliche und rassistische Aussagen und Tattoos, die ihn am extrem rechten Rand verorten. Zudem werden aktuell weitere Details eines Missbrauchsvorwurfs gegen ihn bekannt. Er gilt als einer der Wackelkandidaten für die Bestätigung durch den Senat. Auch weitere Personalien sorgen in Washington und in Europa für Zweifel.</p>
+<p>Was plant Trump mit diesem Kabinett? Und wie wird sich seine Präsidentschaft auf die Kriege in der Ukraine und im Nahen Osten auswirken? Darum geht es in dieser Folge von "Auf den Punkt: Die US-Wahl".</p>
+<p><strong>Zum Weiterlesen:</strong> <a href="https://www.sueddeutsche.de/projekte/artikel/politik/trump-us-wahl-latinos-rassismus-usa-republikaner-e005206/">Hier </a>finden Sie den Text von Boris Herrmann und Peter Burghardt über die Abkehr der Latinos von den Demokraten. </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 22.11.2014, um 11 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche, Laura Terberl</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über LiveNOW from Fox, TODAY und Shawn Ryan Show.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1673699-m-5e01428c6c60a6d2d24de6d93a11aa54.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/38-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>„Mittelfinger ans System“: Trumps erste Personalentscheidungen</h2>
+                    <time datetime="2024-11-15T00:00:37+00:00">15.11.2024</time>
+                </header>
+                <p><p>Seit seinem Wahlsieg in der vergangenen Woche hat Donald Trump schon zahlreiche Personalentscheidungen verkündet, unter anderem die Heimatschutzministerin, den Verteidigungsminister, die UN-Botschafterin, den Außenminister, den Justizminister, den Botschafter für Israel, den CIA-Direktor und den Leiter der Umweltbehörde. </p>
+<p>Während die Nominierung von Marco Rubio für den Posten des Außenministers noch recht konventionell anmutet, haben andere Entscheidungen Empörung ausgelöst – etwa die Berater-Stelle für Elon Musk und Trumps Entscheidung, Matt Gaetz aus Florida zum Justizminister zu machen. Gegen Gaetz gibt es sogar Widerstand aus dem Maga-Flügel der Republikanischen Partei. </p>
+<p>Um diese und weitere Personalien und was sie für die politische Ausrichtung der Trump-Regierung bedeuten könnten, geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“. </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 14.11.2024 um 11:30 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Carolin Lenk, Leopold Zaak</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über CBS Evening News, donaldjtrump.com, CBS 19, PBS NewsHour und ABC News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1672999-m-8f764d32d698dfa7e64eca3fa03a4358.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/37-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Die Amerikaner wollen einen autoritären Präsidenten</h2>
+                    <time datetime="2024-11-06T00:00:36+00:00">06.11.2024</time>
+                </header>
+                <p><p>Bereits am Mittwochvormittag deutscher Zeit – viel früher als eigentlich gedacht – stand fest: Donald Trump wird zum zweiten Mal Präsident der USA. Er konnte die wichtigsten Swing States für sich entscheiden und diesmal auch die Mehrheit der Gesamtstimmen, also den sogenannten "popular vote". In allen Wählergruppen hat Trump gegenüber 2020 dazu gewonnen, etwa bei Latinos, Frauen und Jungwählern. </p>
+<p>Wieso haben sich so viele Amerikaner und Amerikanerinnen für einen autoritären Regierungsstil entschieden? Und wie geht es jetzt weiter, in den USA, aber auch für Deutschland und Europa? Darum geht es in einer ersten Analyse des Trumpschen Wahlsiegs in dieser Folge von "Auf den Punkt: Die US-Wahl". </p>
+<p>Den Text von Peter Burghardt über Kamala Harris’ Wahlparty an der Howard University in Washington <a href="https://www.sueddeutsche.de/projekte/artikel/politik/us-wahl-harris-niederlage-auftritt-dunkel-havard-e165926/">finden Sie hier</a>.</p>
+<p>Die Ausgabe von "Auf den Punkt" vom frühen Mittwochmorgen mit einer ersten Analyse und Eindrücken aus Washington <a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-trump-harris-wahlergebnis-lux.GVrNTmeTCpSmnhFes7qjr5">finden Sie hier.</a></p>
+<p>Redaktionsschluss für diese Sendung war Mittwoch, 06.11.2024 um 14 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Lars Langenau</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über FOX 9 Minneapolis-St. Paul.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1654824-m-b0487b74428ce0e8c1aef7dfaaada967.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/36-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>„Insel aus Müll“: Der letzte Wahlkampf-Skandal?</h2>
+                    <time datetime="2024-11-01T00:00:35+00:00">01.11.2024</time>
+                </header>
+                <p><p>Kamala Harris wählte für ihr „Closing Statement“ einen symbolischen Ort: Auf der „Ellipse“ in Washington hielt sie am Dienstag eine Rede – genau dort, wo Donald Trump seine Anhänger am 6. Januar 2021 zum Sturm aufs Kapitol angestiftet hatte. Der rote Faden in Harris’ Rede war die Warnung vor Trump und das Versprechen, als Präsidentin mit ihren Gegnern zusammenzuarbeiten. Wird sie damit unentschlossene Wähler und Wählerinnen überzeugen können?</p>
+<p>Wenige Tage zuvor erfüllte sich Donald Trump einen lang gehegten Traum: Am Sonntag fand im „Madison Square Garden“, der berühmten Arena in Trumps Heimatstadt New York, seine letzte große Wahlkampf-Rally statt. Bis er selbst auf die Bühne trat, vergingen viereinhalb Stunden, in denen unter anderem der Comedian Tony Hinchcliffe rassistische Witze über Latinos und das US-Außengebiet Puerto Rico riss. Genau diese Witze könnten Trump im entscheidenden Swing State Pennsylvania wichtige Stimmen kosten, denn dort gibt es eine große puerto-ricanische Community. Oder wiederholt sich auch hier, was Trumps Kampagne schon 2016 und 2020 bestimmt hat: Dass er und seine Unterstützer und Anhänger sagen können, was sie wollen, ohne nennenswerte Konsequenzen? </p>
+<p>In dieser Folge von „Auf den Punkt: Die US-Wahl“ vor dem Wahltag am 5. November geht es um diese beiden groß angelegten Wahlkampfauftritte der Kandidaten und ihre möglichen Auswirkungen, um die neuesten und finalen Umfragen und Prognosen – und um einen Skandal, den ausgerechnet der noch amtierende Präsident Joe Biden auf den letzten Metern verursacht hat.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 31.10.24 um 14 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Right Side Broadcasting Network, FOX 4 Dallas-Fort Worth, ABC News, KSDK News und CBS News. </p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1651246-m-937430a94005c72776213dccc304223f.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/35-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Live-Podcast: Die US-Wahl und die Welt</h2>
+                    <time datetime="2024-10-30T00:00:34+00:00">30.10.2024</time>
+                </header>
+                <p><p>Die älteste Demokratie der Welt wählt am 5. November zwischen Kamala Harris und Donald Trump – und trifft ihre inneren Dämonen: Populismus, Gewalt, Isolationismus. Die Süddeutsche Zeitung hat zwei herausragende Kenner des Landes zum Gespräch im Amerikahaus in München geladen: Emily Haber, ehemalige Botschafterin in Washington und Staatssekretärin im Auswärtigen Amt, und Michael Georg Link, Beauftragter der Bundesregierung für die transatlantischen Beziehungen. Das Gespräch moderierte Stefan Kornelius, Ressortleiter Politik der SZ. </p>
+<p>Hören Sie hier die Aufzeichnung der Veranstaltung, die am 25. Oktober in der Reihe „SZ im Dialog“ stattfand. </p>
+<p>Redaktionsschluss für diese Sendung war Dienstag, 29.10.2024 um 11:00 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius</p>
+<p>Produktion: Carolin Lenk, Nadja Schlüter</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1651244-m-eaabe412f089b6d45cf02f1cece3481d.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/34-live-podcast-die-us-wahl-und-die-welt/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Eindrücke aus dem gespaltenen Land: US-Podcast bei der „Nacht der Autoren der SZ“</h2>
+                    <time datetime="2024-10-25T00:00:33+00:00">25.10.2024</time>
+                </header>
+                <p><p>Am 11. Oktober fand im Münchner Volkstheater die „Nacht der Autorinnen und Autoren der SZ“ statt. Auf den Bühnen des Theaters stellten viele verschiedene Mitarbeiterinnen und Mitarbeiter der Zeitung ihre Arbeit vor und tauschten sich mit dem Publikum aus. </p>
+<p>Auch „Auf den Punkt: Die US-Wahl“ hatte ein Gastspiel dort und wurde als Live-Podcast aufgezeichnet: Die beiden Moderatoren Stefan Kornelius und Nadja Schlüter sprachen über das unfaire Wahlsystem der USA und schalteten dann aus Washington und New York die beiden Korrespondenten Boris Herrmann und Peter Burghardt zu. Sie schilderten Eindrücke von vor Ort, berichteten von ihren Recherchen und der Stimmung im Land und beantworteten Fragen aus dem Publikum. Warum wählen Menschen Donald Trump? Welchen Einfluss haben die Vize-Kandidaten? Und wie wirkt sich Trumps Behauptung, die Wahl 2020 gewonnen zu haben, auf die aktuelle Wahl aus?</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 25.10.2024 um 11:30 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Produktion: Carolin Lenk, Imanuel Pedersen</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1637684-m-5c6875632e060649576357c055d312ec.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/33-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>„Der innere Feind“: Trumps radikales Wahlkampffinale</h2>
+                    <time datetime="2024-10-18T00:00:32+00:00">18.10.2024</time>
+                </header>
+                <p><p>Donald Trump lässt bei einem Townhall-Event eine halbe Stunde lang Musik laufen, statt weitere Fragen von Wählern und Wählerinnen zu beantworten, und Kamala Harris stellt sich einem Interview bei Fox News: Diese beiden Wahlkampftermine der Kandidaten waren wohl die einprägsamsten in dieser Woche. Doch auch andere Auftritte und Termine zeigen, wie Harris auf den letzten Metern ihre Strategie noch einmal anpasst – und wie Trump immer radikaler wird, weil er es sich offenbar erlauben kann.</p>
+<p>In dieser Folge von „Auf den Punkt: Die US-Wahl“ besprechen wir den Endspurt der Kandidaten und schauen auf die Wählergruppen, die sie jetzt noch zu erreichen versuchen.</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 18.10.2024 um 11 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche, Vinzent-Vitus Leitgeb, Carolin Lenk</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Donald J Trump (Youtube), CNN, WFAA, Next9News, Fox News, Forbes Breaking News, Associated Press, All The Smoke und Breaking Points.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1637532-m-d352e0c843577cc8dc1e03822b143965.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/32-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Swing States: Wo fällt die Entscheidung 2024?</h2>
+                    <time datetime="2024-10-11T00:00:31+00:00">11.10.2024</time>
+                </header>
+                <p><p>Die USA haben 50 Bundesstaaten – aber die Präsidentschaftswahl wird in nur einem Bruchteil davon entschieden. In diesem Jahr gibt es sieben sogenannte Swing States, in denen das Rennen besonders eng ist und um die beide Kandidaten deswegen besonders kämpfen: Pennsylvania, Michigan und Wisconsin im sogenannten "Rust Belt" im Nordosten der USA, sowie North Carolina, Georgia, Arizona und Nevada im südlichen "Sun Belt".</p>
+<p>Was diese Staaten jeweils ausmacht, wie Kamala Harris und Donald Trump versuchen, dort Wähler und Wählerinnen für sich zu gewinnen, und wie die Menschen in diesen Staaten es finden, mit Kampagnenauftritten und Werbespots überschüttet zu werden, darum geht es in dieser Folge von "Auf den Punkt: Die US-Wahl".</p>
+<p>Zum Weiterlesen:</p>
+<p><a href="https://www.sueddeutsche.de/politik/us-wahl-trump-pensylvania-lux.35nD9wPGS9e4FnuhM8sgBo">Hier</a> finden Sie Fabian Fellmanns Text über seine Reise nach Pennsylvania. </p>
+<p>Peter Burkhardts Reportage aus dem wichtigen Wahlkreis Maricopa County in Arizona können Sie<a href="https://www.sueddeutsche.de/projekte/artikel/politik/us-wahl-trump-harris-arizona-maricopa-county-e715541/"> hier</a> lesen.</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/podcast-donald-trump-luegner-amerika-wahrheit-us-wahl-2024-e958028/?utm_source=Shortlink&amp;utm_medium=link_em-pc&amp;utm_campaign=trump-podcast&amp;utm_content=trump">Hier</a> geht es zur neuen Podcast-Serie "Old Man Trump". Die erste Folge können Sie kostenlos hören, alle weiteren mit SZ Plus. </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 10.10.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche, Carolin Lenk</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Straight Arrow News, Donald J. Trump (Youtube), Reuters und NBC News. </p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1628802-m-c4fe3ab8d72fe446ae4bfaa08864d5c5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/31-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Vize-Debatte: Trügerische Harmonie</h2>
+                    <time datetime="2024-10-04T00:00:30+00:00">04.10.2024</time>
+                </header>
+                <p><p>Vance gegen Walz: Diese Woche haben die beiden Vizekandidaten von Donald Trump und Kamala Harris ihr TV-Duell ausgetragen – und das in einem für diesen Wahlkampf erstaunlich zivilen Ton und geprägt vom Austausch über politische Inhalte. Um die Unsicherheiten von Tim Walz auf der Bühne und J.D. Vances überraschende Strategie, den Gegner in einer rhetorischen Umarmung zu erwürgen, geht es in dieser Folge. </p>
+<p>Außerdem: Was hat es mit der neuen Anklageschrift gegen Donald Trump im Verfahren wegen Wahlbetrugs auf sich? Und wird der verheerende Hurrikane im Südosten der USA den Ausgang der Wahl beeinflussen?</p>
+<p><strong>Zum Weiterlesen:</strong></p>
+<p><a href="https://www.sueddeutsche.de/politik/us-praesident-jimmy-carter-100-geburtstag-ehrgeiz-lux.BM8tqgm8fYimtJzo7HzaJa">Hier</a> finden Sie den Text zum 100. Geburtstag von Jimmy Carter. </p>
+<p><a href="https://www.sueddeutsche.de/meinung/tv-duell-vance-walz-trump-harris-us-wahl-kommentar-lux.RyBcSwFUCwYg5tvtrDSNay">Hier</a> lesen Sie einen Kommentar von Fabian Fellmann zur Debatte der Vizekandidaten.</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 04.10.2024 um 11 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Johannes Korsche, Carolin Lenk und Laura Terberl</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über 11Alive, ABC News und CNN.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1612056-m-f42d27347f8faec4b0f3caec0918c068.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/30-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>„Inner Circles“: Wer Trump und Harris berät</h2>
+                    <time datetime="2024-09-27T00:00:29+00:00">27.09.2024</time>
+                </header>
+                <p><p>US-Präsidentschaftswahlkampf bedeutet auch: Sehr viele Menschen arbeiten daran, dass ein Mensch am Ende die Wahl gewinnt. Kamala Harris und Donald Trump haben große Teams und enge Vertraute um sich, die die Kampagnen-Strategie ausarbeiten, an politischen Botschaften und Plänen feilen, Reden schreiben, mit der Presse kommunizieren und Reisen organisieren. In dieser Folge von "Auf den Punkt: Die US-Wahl" schauen wir uns ein paar dieser Vertrauten genauer an. Außerdem sprechen wir über die Unterstützung durch Prominente im Wahlkampf, die Geld spenden und die Wählerschaft mobilisieren. </p>
+<p><strong><a href="http://sz.de/uswahl-newsletter">Hier </a>können Sie den US-Wahl-Newsletter abonnieren.</strong> </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 26.09.2024 um 14 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Carolin Lenk, Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Politico, ABC News, Kamala Harris (Youtube), Media Matters, @RonFilipowski (X), PBS Newshour und C-Span.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1604636-m-8c66a9db3bc428c783688bdf68ab10dd.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/29-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>USA: Land der unbegrenzten politischen Gewalt?</h2>
+                    <time datetime="2024-09-20T00:00:28+00:00">20.09.2024</time>
+                </header>
+                <p><p>Seit 2016 ist die Zahl der politischen Gewalttaten und Drohungen in den USA massiv angestiegen. Eine besonders hohe Eskalationsstufe erreichte die Gewalt am 6. Januar 2021, mit dem Sturm aufs Kapitol. Auch in diesem Jahr ist die Situation wieder extrem angespannt: Innerhalb von nur zwei Monaten hat es zwei Attentatsversuche auf Donald Trump gegeben – die ersten Anschläge auf einen Präsidenten oder Kandidaten seit den Achtzigerjahren. Gleichzeitig ist politische Gewalt ein Alltagsphänomen in den USA: Wahlhelferinnen, Lehrer, Richterinnen oder Journalisten werden wegen ihrer politischen Einstellung bedroht oder angefeindet. Verschwörungserzählungen heizen die Stimmung zusätzlich an. Zuletzt hat das Gerücht über haitianische Einwanderer, die in Springfield, Ohio, angeblich Hunde und Katzen essen würden, und das von Donald Trump bei der TV-Debatte weiterverbreitet wurde, zu mehrfachen Bombendrohungen in der Stadt geführt.</p>
+<p>Woher rührt diese Gewalt? Wie tief reicht sie in die Geschichte zurück? Und wie könnte man ihr beikommen? In dieser Folge von "Auf den Punkt: Die US-Wahl" schauen wir auf zurückliegende und aktuelle Ereignisse, auf die Rhetorik der Republikaner und der Demokraten und ein politisches und soziales System, das Gewaltbereitschaft in der DNA trägt. </p>
+<p><a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-us-wahl-usa-wahlsystem-us-praesidentschaftswahl-us-kongresswahl-1.6559929">Hier</a> geht es zur Folge "Ist das noch Demokratie: Das US-Wahlsystem und seine Fehler". </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 20.09.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb, Carolin Lenk</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Reuters, PBS Newshour, The Wall Street Journal, C-Span, ABC News, Bloomberg Television und CBS News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1595749-m-e840a0374e0f1ce472c72852e954ada4.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/28-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Harris’ Debatten-Sieg ist noch längst kein Wahlsieg</h2>
+                    <time datetime="2024-09-13T00:00:27+00:00">13.09.2024</time>
+                </header>
+                <p><p>Erste Umfragen und Medien weltweit sind sich einig: Kamala Harris hat die TV-Debatte gegen Donald Trump gewonnen. In dieser Folge von "Auf den Punkt: Die US-Wahl" geht es um die Strategien, mit denen Harris diesen Sieg einfahren konnte – und um die Frage, ob sie auch ein Angebot an diejenigen Wähler und Wählerinnen gemacht hat, auf die es jetzt ankommt: die Unentschiedenen. </p>
+<p><a href="https://www.sueddeutsche.de/politik/us-wahl-20204-tv-duell-donald-trump-kamala-harris-ego-angriff-lux.PX6FzRhetz1YPaxRKVWZbC">Hier </a>finden Sie eine Analyse der TV-Debatte von US-Korrespondent Peter Burghardt.</p>
+<p><a href="https://www.sueddeutsche.de/meinung/tv-duell-us-wahl-kamala-harris-donald-trump-kommentar-lux.6BSN6g2RHsZz2QP7fj1X11">Hier</a> lesen sie den Debatten-Kommentar von Fabian Fellmann, ebenfalls Korrespondent in Washington: "In Harris hat Trump seine Meisterin gefunden". </p>
+<p>Boris Herrmann, Korrespondent in New York, <a href="https://www.sueddeutsche.de/politik/us-wahl-tv-duell-kamala-harris-donald-trump-demokraten-eindruecke-lux.9stt2KMtAt3mSZMdwg6jXQ">schildert Eindrücke</a> vom Public Viewing der TV-Debatte in einem New Yorker Pub.  </p>
+<p>SZ-Feuilleton-Redakteur Andrian Kreye <a href="https://www.sueddeutsche.de/projekte/artikel/kultur/kamala-harris-donald-trump-tv-duell-usa-broadway-e030121/">beschreibt</a>, warum das TV-Duell "reiner Broadway" war.  </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 12.09.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb, Thisbe Westermann</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über ABC News, dinostrunk (Youtube) und @NoahGarfinkel (X).</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1594936-m-20f4a88e20b89d89dccdbc6edcaf6f66.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/27-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der MAGA-Kult: Wie die Republikaner zur Trump-Partei wurden</h2>
+                    <time datetime="2024-09-06T00:00:26+00:00">06.09.2024</time>
+                </header>
+                <p><p>Liz Cheney, eine der bekanntesten – und wenigen – Trump-Kritikerinnen innerhalb der Republikanischen Partei, hat in dieser Woche den ultimativen Vertrauensbruch begangen: Bei einer Veranstaltung an einer Universität in North Carolina sagte sie, sie werde im November Kamala Harris wählen. Auch beim Parteitag der Demokraten in Chicago haben einige Republikaner Reden gegen Trump gehalten, zum Beispiel seine ehemalige Pressesprecherin Stephanie Grisham, der Bürgermeister von Mesa, Arizona, John Giles, oder Geoff Duncan, der ehemalige Vize-Gouverneur von Georgia. Sie alle fühlen sich in der Republikanischen Partei nicht mehr zuhause, seit Trump sie übernommen und zur Make-America-Great-Again-Partei gemacht hat.</p>
+<p>Seit 170 Jahren gibt es die Republikanische Partei – in dieser langen Geschichte ist die Ära Trump also bisher nicht viel mehr als ein Wimpernschlag. Aber Trump hatte Wegbereiter: Personen und Strömungen, die die Republikanische Partei so geprägt, dass er sie sich letztlich unterwerfen konnte. </p>
+<p>Über diese Wegbereiter und die mögliche Zukunft der „Grand Old Party“ spricht in der aktuellen Folge „Auf den Punkt: Die US-Wahl“ Reymer Klüver. Er war von 2005 bis 2012 SZ-Korrespondent in Washington und berichtet bis heute als Redakteur für Außenpolitik über US-Politik. </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 05.09.2024 um 16 Uhr. </p>
+<p>Moderation, Redaktion: Nadja Schlüter</p>
+<p>Redaktion: Ann-Marlen Hoolt, Lars Langenau, Thisbe Westermann</p>
+<p>Produktion: Julia Ongyerth</p>
+<p>Zusätzliches und zitiertes Audiomaterial über CNN, WFAA, CBS News, ABC News, NBC News und The Tonight Show Starring Jimmy Fallon.</p>
+<p><a href="https://easy-feedback.com/umfrage/1869282/ux2u80-multi-149500">Klicken Sie hier und nehmen Sie an unserer "Auf den Punkt"-Umfrage teil.</a></p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1587156-m-68eb8e66977aad9af2a8466884a698e1.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/26-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Stars, Stripes und gute Laune: Der neue Patriotismus der Demokraten</h2>
+                    <time datetime="2024-08-30T00:00:25+00:00">30.08.2024</time>
+                </header>
+                <p><p>Auf ihrem Parteitag in Chicago haben die US-Demokraten ihre neue Kandidatin Kamala Harris gefeiert – und  die Liebe zu ihrem Land. Dieser neu erwachte demokratische Patriotismus ist ein Gegenentwurf zum Nationalstolz der Republikaner unter Trump. </p>
+<p>In dieser Folge von "Auf den Punkt: Die US-Wahl" spricht SZ-Autor Jürgen Schmieder, der seit mehr als zehn Jahren in Los Angeles lebt, über den amerikanischen Patriotismus und wie er sich in den vergangenen Jahren verändert hat. </p>
+<p>Zum Weiterlesen:
+<a href="https://www.sueddeutsche.de/projekte/artikel/politik/walz-us-wahlen-vizepraesident-nebraska-harris-trump-republikaner-e668303/">Hier</a> finden Sie die Reportage von Boris Herrmann aus Butte, Nebraska. </p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 29.08.24 um 13 Uhr. </p>
+<p>Moderation, Redaktion: Nadja Schlüter</p>
+<p>Redaktion: Lars Langenau</p>
+<p>Produktion: Julia Ongyerth</p>
+<p>Zusätzliches und zitiertes Audiomaterial über LiveNOW from FOX, The Report, PBS News Hour, The Guardian, Reuters, Bloomberg QuickTake, Fox 4 Dallas-Fort Worth, Washington Post und @KamalaHQ (X).</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1573119-m-6618ef3de077ff02101e10457ca6d926.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/25-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>„Do something!“ Demokraten-Parteitag mit Kampfansage</h2>
+                    <time datetime="2024-08-23T00:00:24+00:00">23.08.2024</time>
+                </header>
+                <p><p>Vier Tage lang haben die US-Demokraten beim Parteitag ihre neue Kandidatin Kamala Harris bejubelt. Zum Abschluss hielt sie selbst ihre Nominierungsrede. Die Themen des Parteitags waren Aufbruch, Zukunft, Neuanfang. Aber gab es auch kritische Töne? Inwiefern ist Kamala Harris’ Rede hinter den Erwartungen zurückgeblieben? Und wie kam Präsident Joe Biden an, der zu Beginn des Parteitags eine Art politische Abschiedsrede gehalten hat? </p>
+<p>Darum geht es in dieser Folge von "Auf den Punkt: Die US-Wahl". Michael Werz, Amerikanist und Senior Fellow am American Center for Progress, und SZ-USA-Korrespondent Peter Burghardt schildern ihre Eindrücke von vier euphorischen Tagen in Chicago.</p>
+<p>Zum Weiterlesen:</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/demokraten-harris-walz-obama-us-wahl-usa-e902886/">Hier</a> finden Sie einen Text von Peter Burghardt und Fabian Fellmann über den Parteitag der Demokraten.</p>
+<p>In <a href="https://www.sueddeutsche.de/politik/barack-obama-us-demokraten-chicago-parteitag-michelle-obama-lux.X4zZ7pThU5Jb6fkbqNReQV">diesem Text</a> haben die beiden die Reden der Obamas analysiert.</p>
+<p>Peter Burghardt hat sich auch die Rede von Joe Biden <a href="https://www.sueddeutsche.de/politik/joe-biden-parteitag-demokraten-usa-kamala-harris-praesidentschaftswahl-donald-trump-lux.X8z3xkct9ghRXVM3BrM3LN">genauer angeschaut</a>.</p>
+<p>Fabian Fellmann <a href="https://www.sueddeutsche.de/politik/usa-wahlkampf-demokraten-tim-walz-lux.XmMf2xMdQMMP5CVbftrGvW">schreibt über Harris’ Running Mate</a>, den "Normalo" Tim Walz – und seinen gut vorbereiteten politischen Aufstieg.</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 23.08.2024 um 10 Uhr. </p>
+<p>Moderation, Redaktion: Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb, Carolin Lenk</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Reuters, ABC News, CBS News, CNN, PBS News, ABC News, The Times and The Sunday Times, CBS News, Forbes Breaking News, UnderTheDeskNews (Tiktok), queencitytrends (Instagram) und demconvention (Tiktok).</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1564403-m-f14876cf034e51743999af65ba1d8bcb.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/24-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Sommerpause - Nur diese Woche bei &#34;Auf den Punkt: Die US-Wahl&#34;</h2>
+                    <time datetime="2024-08-16T00:00:23+00:00">16.08.2024</time>
+                </header>
+                <p><p>Liebe Hörerinnen und Hörer von „Auf den Punkt: Die US-Wahl“. Wir machen in dieser Woche eine kleine Sommerpause. <strong>Die nächste reguläre Podcastfolge erscheint am 23. August zum Parteitag der Demokraten, der kommende Woche stattfindet</strong></p>
+<p>Mehr zum Interview von Elon Musk mit Donald Trump <a href="https://www.sueddeutsche.de/politik/us-wahl-trump-gespraech-musk-x-luegen-uebertreibungen-lux.Y9WAPJyfP6AgjGhMkMLLEj">können Sie hier lesen.</a></p>
+<p>Den Text über Donald Trumps Pressekonferenz in Florida <a href="https://www.sueddeutsche.de/politik/us-wahl-trump-harris-wahlkampf-luegen-lux.ByRPq3nAVwzmvqKmk4sqRq">finden Sie hier.</a> </p>
+<p>Donald Trump ist in die Defensive geraten. <a href="https://www.sueddeutsche.de/politik/chris-lacivita-wahlkampf-republikaner-trump-lux.JfyvwXK9nWHEJ3BJjy9hYD">Jetzt greift sein Wahlkampfmanager Chris LaCivita zu einer berüchtigten Taktik. Analyse von Fabian Fellmann</a>.</p>
+<p>Alle Entwicklungen zur US-Wahl können Sie auch immer in <a href="https://www.sueddeutsche.de/politik/us-wahl-2024-news-liveblog-trump-harris-cyberangriffe-wahlkampfteam-lux.QPj68FkcfAcshMxh7XKgdy">unserem Liveblog nachlesen.</a> </p>
+<p>Zusätzliches Audiomaterial über: Guardian News, CNBC Television.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1559113-m-07abed7148c240f57e61173d71d336c8.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/23-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Tim Walz: The Normal One?</h2>
+                    <time datetime="2024-08-09T00:00:22+00:00">09.08.2024</time>
+                </header>
+                <p><p>Seit wenigen Tagen steht das Duell des US-Präsidentschaftswahlkampfs nun fest: Kamala Harris wird mit Tim Walz als “Running Mate” gegen Donald Trump und dessen Vize-Kandidaten J.D. Vance antreten. Das hat sie am Dienstag in Pennsylvania verkündet. </p>
+<p>Tim Walz war bis dahin einem Großteil der Wählerinnen und Wähler in den USA völlig unbekannt oder sie hatten keine Meinung zu ihm – das legen Umfragen nahe. Er ist seit 2019 Gouverneur von Minnesota, war davor in der Armee, Highschool-Lehrer und Football-Coach, sowie zwölf Jahre lang Abgeordneter im Repräsentantenhaus. </p>
+<p>Er gilt als bodenständig, authentisch, und bestens in seiner Partei vernetzt. Der langjährige Berufspolitiker hat offenbar allerdings auch sehr an seinem Image als netter Patriot von nebenan gearbeitet. </p>
+<p>Wie ist er also in diesem Wahlkampf angekommen? Für welche Themen steht er und stand er in der Vergangenheit und wie verändert er auch die Auftritte von Kamala Harris? Darum geht es in dieser Folge.</p>
+<p>Zum Weiterlesen: </p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/us-wahl-tim-walz-kamala-harris-trump-wahlkampf-demokraten-e709411/">Eines ist nach dem Auftritt von Kamala Harris und ihrem Vizekandidaten klar: Es gibt wieder Optimismus in der amerikanischen Politik. Reportage von Christian Zaschke und Boris Herrmann.</a></p>
+<p><a href="https://www.sueddeutsche.de/politik/trump-harris-usa-wahlkampf-luegen-lux.ByRPq3nAVwzmvqKmk4sqRq">Die Demokraten bekommen gerade viel Aufmerksamkeit, das passt Donald Trump überhaupt nicht. Christian Zaschke über eine Pressekonferenz, bei der man Trump nicht immer gut folgen konnte.</a></p>
+<p><a href="https://www.sueddeutsche.de/politik/us-wahl-2024-news-liveblog-trump-biden-wahlniederlage-warnung-tv-duell-debatte-lux.QPj68FkcfAcshMxh7XKgdy">Aktuelle Entwicklungen können Sie auch in unserem Liveblog zur US-Wahl nachlesen. Etwa darüber, dass es nun doch mindestens eine TV-Debatte zwischen Trump und Harris geben soll, womöglich sogar drei.</a></p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 08.08.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Vinzent-Vitus Leitgeb</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über MSNBC, Kare 11, Associated Press, Forbes Breaking News, MNHouseInfo, Abc News</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1545443-m-c55573d14baaad3bddb38f08578dbe10.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/22-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Harris Headquarter &amp; Team Trump: Der neue Wahlkampf</h2>
+                    <time datetime="2024-08-02T00:00:21+00:00">02.08.2024</time>
+                </header>
+                <p><p>Nach der „Honeymoon“-Phase mit ihrer neuen Kandidatin Kamala Harris müssen die Demokraten jetzt den Schwung nutzen, um in den Wahlkampf zu finden. Auch die Republikaner sind wegen der neuen Gegenkandidatin auf der Suche nach einer passenden Strategie. </p>
+<p>Auf welche Themen und Botschaften die beiden Seiten setzen, warum Trumps „Running Mate“ J.D. Vance gerade zum Problem wird und wie Trump den Rassismus in den neuen Wahlkampf gebracht hat – darum geht es in dieser Folge. </p>
+<p>Zum Weiterlesen:</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/us-wahl-kamala-harris-vizepraesident-running-mate-e844026/">Hier </a>finden Sie die Kurzporträts der Politiker, die aktuell als Kamala Harris’ „Running Mates“ gehandelt werden.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 01.08.2024, um 12 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über Kamala Harris (Youtube), CNN, msnbc, @Tim_Walz (X), Today, @laurakgarrison (X), @MikeInacay (X), GOP (Youtube), @mainegop (X), Fox 5, @AJBayatpour (X), @JoshRultNews (X), CTV News, abc News, @kamalahq (tiktok), Fox News, Megyn Kelly (Youtube), @kamalahq (X).</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1545442-m-e7cdda635466e552c98bb8e0f0c1de7b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/21-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Plötzliche Euphorie: Harris’ Blitzstart in den Wahlkampf</h2>
+                    <time datetime="2024-07-26T00:00:20+00:00">26.07.2024</time>
+                </header>
+                <p><p>Am Sonntag, den 21. Juli 2024, stand es fest: Joe Biden zieht sich aus dem Präsidentschaftswahlkampf zurück – und empfiehlt seine Vizepräsidentin Kamala Harris als Nachfolgerin für die Kandidatur der Demokraten. Nur zwei Tage später hat Harris fast die gesamte Partei hinter sich versammelt und kann auf genug Delegiertenstimmen setzen, um tatsächlich nominiert zu werden. Harris startet voller Energie in den Wahlkampf, der jetzt noch einmal von vorne beginnt. Im neuen Duell "Harris vs. Trump" greift die ehemalige Staatsanwältin den Ex-Präsidenten und verurteilten Straftäter scharf an. Die demokratische Basis, die in den vergangenen Wochen einen Wahlsieg in weite Ferne rücken sah, schöpft wieder Hoffnung. Doch Harris’ Strategie könnte auch eine Gegenmobilisierung im konservativen Amerika auslösen. </p>
+<p>Wieso Biden sich letztlich doch zum Rückzug entschlossen hat, auf welche Themen Kamala Harris jetzt setzen will  und was der Wechsel der Kandidatur für die Trump-Kampagne bedeutet – darum geht es diesmal bei "Auf den Punkt: Die US-Wahl".</p>
+<p>Zum Weiterlesen: </p>
+<p><a href="https://www.sueddeutsche.de/politik/us-wahl-kamala-harris-wahlkampagne-trump-attacken-begeisterung-lux.FMFrbfQBWoUTPxFNkM5PgM">Hier </a>können Sie Boris Herrmanns Text über die neue Begeisterung (und das neue Merchandising) für Kamala Harris lesen. </p>
+<p>Zum "Brat Summer" – und warum Kamala Harris "brat" ist, lesen Sie <a href="https://sz-magazin.sueddeutsche.de/vorgeknoepft-die-modekolumne/brat-charlie-xcx-gruen-summer-kamala-harris-94142">hier</a> die Hintergründe.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 25.07.2024 um 15 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über PolitFact California, Pass The Torch (Youtube), Kamala Harris (Youtube), AP, Sky News, @MagaIncWarRoom (X), LiveNOW from FOX, SBS News und flextillerson (TikTok).</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1539102-m-2f615e5e0dc396ee9667269450a56c10.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/20-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trumps Triumph – und Bidens Ende?</h2>
+                    <time datetime="2024-07-19T00:00:19+00:00">19.07.2024</time>
+                </header>
+                <p><p>Bei einer Wahlkampfveranstaltung in Butler, Pennsylvania, wäre Donald Trump beinahe erschossen worden. Nur 48 Stunden später nahm er am Parteitag der Republikaner, der “Republican National Convention” (RNC) in Milwaukee, Wisconsin teil, kürte seinen Running Mate J.D. Vance und wurde selbst offiziell zum Präsidentschaftskandidaten ernannt. Die RNC glich teilweise eher einem Gottesdienst als einem Parteitag, denn alle Redner und Rednerinnen lobten den Kandidaten in höchsten Tönen – und seine eigene Rede klang zumindest zu Beginn wie eine Predigt. 
+Haben die vergangenen Tage einen Wahlsieg Donald Trumps im November noch wahrscheinlicher gemacht? In dieser Folge von “Auf den Punkt: Die US-Wahl” blicken wir auf die RNC, analysieren die Reaktionen der Republikaner und Demokraten auf das Trump-Attentat – und sprechen über die schwierige Lage von Joe Biden, auf den der Druck aus der eigenen Partei steigt, seine Kandidatur zurückzuziehen.</p>
+<p>Zum Weiterlesen:</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/trump-republikaner-parteitag-usa-e002797/">Hier </a>finden Sie den Text von Peter Burghardt und Fabian Fellmann zu den Unterstützern und Kritikern Donald Trumps.</p>
+<p><a href="https://www.sueddeutsche.de/politik/trump-vance-us-wahl-lux.VnEaqHsxbpisooaDAqrfpn">Hier</a> lesen Sie mehr über den republikanischen Vizepräsidentschaftskandidaten J.D. Vance – und <a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-donald-trump-jd-vance-republikaner-praesidentschaftskandidat-vizepraesident-lux.QCeHTzNLRHjGRhmFkaGEw2">hier </a>können die die “Auf den Punkt”-Folge zum “Running Mate” hören.</p>
+<p><a href="https://www.sueddeutsche.de/politik/usa-republikaner-nominierung-trump-haley-lux.A8tzhohB5KipzGekJskbFs">Hier</a> lesen Sie einen Text darüber, wie nun auch Trumps ehemalige Gegnerin, Nikki Haley, für ihn wirbt.</p>
+<p><a href="https://www.sueddeutsche.de/politik/donald-trump-attentat-republikaner-rede-lux.C54JvKXomThFGBiVsuRKgJ">Hier </a>finden Sie die Einschätzungen von Peter Burghardt zur Parteitagsrede von Donald Trump. </p>
+<p>Und <a href="https://www.sueddeutsche.de/thema/USA">hier</a> finden Sie die SZ-Themenseite "USA". </p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 19.07.2024 um 10 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb, Thisbe Westermann</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über NBC News, Sky News Australia, Fox News, CNBC, PBS News Hour und CNN.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1531620-m-d30a7206879dd1fdfdf43de6c8299968.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/19-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Bidens Woche der Bewährung</h2>
+                    <time datetime="2024-07-12T00:00:18+00:00">12.07.2024</time>
+                </header>
+                <p><p>Seit der desaströsen TV-Debatte gegen Donald Trump vor zwei Wochen hat US-Präsident Joe Biden noch immer nicht alle davon überzeugen können, dass er weiterhin der geeignetste Präsidentschaftskandidat der Demokraten ist. Sowohl in der Bevölkerung als auch in der eigenen Partei und in den Medien gibt es viele kritische Stimmen. In den vergangenen Tagen hat Biden sich um Schadensbegrenzung bemüht: Er hat Kampagnenauftritte absolviert, Interviews gegeben und er war Gastgeber der NATO-Konferenz in Washington. Vor allem seine Rede und die abschließende Pressekonferenz wurde genau beobachtet – und die war nicht fehlerfrei.</p>
+<p>Wie lief Bidens Woche der Bewährung ab? Darum geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“.</p>
+<p>Zum Weiterlesen:</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/baltimore-latinos-hispanics-trump-e857749/">Hier</a> finden Sie den Text von Peter Burghardt über die lateinamerikanischen Wanderarbeiter in den USA. </p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/biden-nato-gipfel-washington-trump-selenskij-putin-versprecher-e637421/">Hier</a> finden Sie einen Text über den NATO-Gipfel und Bidens Performance.</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 12.07.2014 um 12 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über ABC, CNN, PBS News Hour, NBC News, MSNBC, X @allinwithchris und @cspanJeremy, Fox News, The White House und The New York Times. </p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1514425-m-90aa5116a52ebc205828318a94ee1291.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/18-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trumps Immunität und die Macht des US Supreme Court</h2>
+                    <time datetime="2024-07-05T00:00:17+00:00">05.07.2024</time>
+                </header>
+                <p><p>Am Montag hat das Oberste Gericht der USA, der US Supreme Court, ein historisches Urteil gefällt: Der Präsident genießt weitreichende Immunität und ist damit vor Strafverfolgung geschützt. Die Immunität umfasst alle Bereiche, die den Kern des Präsidentenamts betreffen – etwa Begnadigungen oder das Vetorecht im Gesetzgebungsprozess –, „mutmaßliche Immunität“ gilt für alle „offiziellen Amtshandlungen“, private Handlungen sind nicht geschützt. </p>
+<p>Das Oberste Gericht hatte die Immunitätsfrage klären müssen, nachdem die Verteidiger des ehemaligen Präsidenten Donald Trump einen Antrag dazu eingereicht hatten. Sie wollten erreichen, dass die Klage gegen Trump bezüglich des Aufstands und des Kapitol-Sturms am 6. Januar 2021 fallengelassen werden muss. Vor einem Berufungsgericht waren sie damit gescheitert. Danach zogen sie vor den Supreme Court – und die oberste Instanz hat ihnen nun einen Teilerfolg beschert. Denn jetzt muss das Bundesgericht in DC, das die Klage zum 6. Januar verhandelt, definieren, welche Handlungen Trumps „offiziell“ waren und welche „privat“. Das wird den Prozess weiter verzögern und vor der Wahl im November wird er wohl nicht beginnen können. Das Urteil hat aber noch weiterreichende Folgen – für Trumps weitere Verfahren, aber auch für das politische Gefüge der USA insgesamt. Wie viel Macht hat der Präsident künftig und wie viel Missbrauchsgefahr besteht? </p>
+<p>Daran schließt sich auch die Frage an, wie viel Macht der Supreme Court hat. Die aktuelle konservative Mehrheit hat bereits eine Vielzahl von Urteilen gefällt, die die amerikanische Gesellschaft verändert haben. Gleichzeitig wird es immer schwieriger, mit den liberalen Richtern und Richterinnen einen Konsens zu finden. Insgesamt ist das eigentlich neutrale Gericht heute stark politisiert und genießt immer weniger Ansehen in der Bevölkerung.</p>
+<p>Wohin steuert der US Supreme Court? Darum – und um die Nachwirkungen der vermasselten TV-Debatte für Joe Biden – geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 04.07.2024 um 15 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches und zitiertes Audiomaterial über @JoeBiden, @DonaldJTrumpforPresident, @ThisisthePresident, @WhiteHouse (alle Youtube), MSNBC, CBS 8 San Diego und AP. </p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1514424-m-593222b3db60b2504504843c3700a5d9.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/17-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trump lügt, Biden verliert: ein tragischer Abend für die Demokraten</h2>
+                    <time datetime="2024-06-28T00:00:16+00:00">28.06.2024</time>
+                </header>
+                <p><p>Die erste TV-Debatte zwischen Joe Biden und Donald Trump hat an diesem Donnerstag und damit ungewöhnlich früh im Wahljahr stattgefunden, zu einem Zeitpunkt, an dem die beiden noch nicht einmal offiziell zum jeweiligen Kandidaten ihrer Partei ernannt worden sind. Das Team um den amtierenden Präsidenten hatte gehofft, mit diesem Termin die Umfragen zugunsten Bidens verschieben zu können. </p>
+<p>Doch vermutlich wird das Gegenteil der Fall sein, denn für Biden hätte es kaum schlechter laufen können. Während Donald Trump in bekannter Manier Lügen verbreitete, wird von Biden vor allem ein Eindruck bleiben: Er ist zu alt für den Wahlkampf. Sein Auftritt hat die Demokraten nervös gemacht – und es werden Stimmen laut, den Kandidaten doch noch auszuwechseln. </p>
+<p>Um die Wirkung der Kontrahenten auf der Fernsehbühne, die Themen, die sie besprochen haben, und welche Konsequenzen die Debatte nun haben wird, geht es in dieser Folge von "Auf den Punkt: Die US-Wahl". </p>
+<p>Zum Weiterlesen empfehlen wir folgende Texte der SZ-Korrespondenten in den USA:</p>
+<p><a href="https://www.sueddeutsche.de/politik/tv-duell-biden-trump-abneigung-luegen-lux.2S7rxvF6KgirkvREwVAqE7">Eine Zusammenfassung der Debatte </a>von Peter Burghardt.</p>
+<p>Die fünf wichtigsten Erkenntnisse, <a href="https://www.sueddeutsche.de/politik/us-wahl-tv-duell-biden-trump-wichtigste-punkte-verlierer-lux.9S1kxsnWrMfcaNMWRtScrB">aufgeschrieben von Fabian Fellmann.</a></p>
+<p><a href="https://www.sueddeutsche.de/meinung/usa-biden-trump-cnn-kommentar-tv-duell-alt-lux.QQmrizHeTficNzPc8zMhsQ">Ein Kommentar von Boris Herrmann:</a> "Bidens Auftritt gehörte zu den schlechtesten in der Geschichte amerikanischer TV-Debatten."</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 28.06.2024, um 12 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über CNN.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1509278-m-83e8915152a9a02a6a0933e6168a55e2.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/16-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ist Joe Biden zu alt für sein Amt?</h2>
+                    <time datetime="2024-06-21T00:00:15+00:00">21.06.2024</time>
+                </header>
+                <p><p>Zu Beginn seiner Amtszeit als US-Präsident, im Januar 2021, war Joe Biden 78 Jahre alt. Damals hat sein hohes Alter noch keine große Rolle gespielt und wurde höchstens von rechten Medien bespielt. Doch bei den Midterm Elections im Herbst 2022 gab eine Mehrheit der Wähler und Wählerinnen an, dass sie gegen eine weitere Kandidatur Bidens seien – wegen seines Alters. </p>
+<p>Als Biden im April 2023 seine erneute Kandidatur ankündigte, waren diese Zweifel also längst in der Welt. Der sogenannte „Hur-Report“ aus dem Februar 2024 hat das Thema dann endgültig groß gemacht, denn darin stand als Urteil über Bidens Persönlichkeit und Verfassung: „Er ist ein älterer Mann, der es gut meint und ein schlechtes Gedächtnis hat“.</p>
+<p>Was ist seitdem passiert? Wie versucht Biden das Argument „zu alt“ zu entkräften? Und wieso macht es dem ja auch schon 78 Jahre alten Donald Trump so viel weniger zu schaffen? Darum geht in dieser Folge von „Auf den Punkt: Die US-Wahl“.</p>
+<p>Den Text von Fabian Fellmann zur geplanten Reform für Migranten in den USA können Sie <a href="https://www.sueddeutsche.de/politik/usa-einwanderung-biden-lux.XxnEeFPjkjEduqzREszgBB">hier</a> lesen.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 20.06.2024, um 15 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Imanuel Pedersen, Michael Ries</p>
+<p>Zusätzliches Audiomaterial über ABC News, GOP War Room, WCVB, Channel 5 Boston, The Telegraph, The Times and The Sunday Times, @JoeBiden (Youtube) und NBC News.</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1501114-m-f457cf80ecfe7a548fca49901ab50ad0.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/15-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Money rules: Gewinnt Geld die US-Wahl?</h2>
+                    <time datetime="2024-06-14T00:00:14+00:00">14.06.2024</time>
+                </header>
+                <p><p>Donald Trump verkauft goldene Turnschuhe für 400 Dollar das Paar. Wer bei einem Fundraiser-Event Joe Biden, Barack Obama und Bill Clinton gemeinsam auf der Bühne sehen will, muss für das Ticket mindestens 225 Dollar zahlen, für ein gemeinsames Foto 100.000, für ein persönliches Treffen 500.000 Dollar. Und jeden Tag verschicken die Kampagnen-Teams unzählige Mails mit Spendenaufrufen und planen weitere exklusive Veranstaltungen. So sammeln sie im US-Wahlkampf pausenlos Geld von Wählern und Wählerinnen, Großspendern und Unternehmerinnen ein. </p>
+<p>Der Wahlkampf in den USA ist teuer und wird immer teurer. 2020 wurden im Vorfeld der Kongress- und Präsidentschaftswahlen 14 Milliarden Dollar ausgegeben – so viel wie nie zuvor. Vor allem seit einem Urteil des Obersten Gerichtshofs aus dem Jahr 2010 wird die Wahlkampf-Finanzierung aber auch massiv kritisiert, da sie immer intransparenter und unregulierter abläuft.</p>
+<p>Warum das Urteil so entscheidend war, was Super PACs sind und was Joe Biden eigentlich in seinem Kampagnen-Shop verkauft – darum geht es in dieser Folge von „Auf den Punkt – Die US-Wahl“.</p>
+<p><em>Hinweis der Redaktion: An einer Stelle im Podcast wird John Kerry als ehemaliger Präsidentschaftskandidat der Republikaner bezeichnet. Das stimmt allerdings nicht. John Kerry trat 2004 für die Demokraten gegen George W. Bush an.</em></p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 13.06.2024, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über DW News, CNN-News18, Joe Biden (Facebook), Donald J. Trump (Facebook), CNBC und NewsNation.</p>
+<p>So können Sie unseren Nachrichtenpodcast abonnieren:</p>
+<p>„Auf den Punkt“ ist der Nachrichtenpodcast der Süddeutschen Zeitung zu den wichtigsten Themen des Tages. Der Podcast erscheint von Montag bis Freitag immer um 17 Uhr. Sie finden alle Folgen auf sz.de/nachrichtenpodcast. Verpassen Sie keine Folge und abonnieren Sie unser Audio-Angebot in Ihrer Lieblings-Podcast-App oder bei iTunes, Spotify, Deezer, Audio Now. Eine Übersicht über all unsere Podcasts finden Sie unter <a href="http://www.sz.de/podcast">www.sz.de/podcast</a> und hier erfahren Sie, wie Sie unsere Podcasts hören können.</p>
+<p>Sie haben Fragen oder Anregungen? Dann schreiben Sie uns: podcast@sz.de.</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1494798-m-ab8bf7a9530b3b0601186e263042e410.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/14-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ist Europa bereit für eine zweite Trump-Präsidentschaft?</h2>
+                    <time datetime="2024-06-07T00:00:13+00:00">07.06.2024</time>
+                </header>
+                <p><p>Die Europäerinnen und Europäer wählen ein neues Parlament. Deshalb sprechen wir in unserem Podcast „Auf den Punkt: Die US-Wahl“ diesmal über das Verhältnis zwischen Europa und den USA: Wie gut oder schlecht ist es aktuell, wie könnte es sich entwickeln, wenn Europa nach der Wahl noch weiter nach rechts rückt – und was würde eine weitere Amtszeit von Joe Biden, was eine erneute Trump-Präsidentschaft für die transatlantischen Beziehungen bedeuten?</p>
+<p><a href="https://www.sueddeutsche.de/politik/podcast-nachrichten-usa-donald-trump-urteil-us-wahl-1.7576216">Hier </a>finden Sie die Ausgabe von „Auf den Punkt“ zum Urteil gegen Donald Trump im New Yorker Schweigegeldprozess.</p>
+<p><a href="https://www.sueddeutsche.de/projekte/artikel/politik/usa-zikaden-illinois-insekten-trump-e617014/">Hier </a>können Sie Boris Herrmanns Reportage über die Zikaden in den USA lesen.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 06.06.2014, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über CNBC Television, Fox News, Fox 35 Orlando, Fox 5 New York, CNN, Reuters, Global News, Le Nouvel Obs, CNews und DW News.</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1487129-m-5b32cb360bbb973514956519a80f5a97.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/13-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>An der US-Grenze: Was erleben Migranten vor Ort?</h2>
+                    <time datetime="2024-05-31T00:00:12+00:00">31.05.2024</time>
+                </header>
+                <p><p>Auch im Jahr 2024 ist es wieder eines der großen Wahlkampfthemen in den USA: die Migration. Donald Trump hetzt gegen Migranten, Präsident Joe Biden will ein neues Migrationsgesetz durch den Kongress bringen und Geflüchtete landen an vielen Orten auf der Straße. Peter Burghardt ist SZ-Korrespondent in Washington und hat in den vergangenen Jahren mehrfach an der Grenze zu Mexiko recherchiert. In dieser Folge von „Auf den Punkt: Die US-Wahl“ schildert er seine Eindrücke, spricht über die Bedeutung von Zugewanderten für die USA und ordnet ein, wie Demokraten und Republikaner mit dem Thema Migration umgehen. </p>
+<p>Hier finden Sie Peter Burghardts Reportagen von der Südgrenze der USA, <a href="https://www.sueddeutsche.de/politik/usa-grenze-migration-hoffnung-chaos-1.5849064">aus Kalifornien (2023)</a> und <a href="https://www.sueddeutsche.de/projekte/artikel/politik/trump-us-wahl-fluechtlinge-mexiko-e936236/">Texas (2024)</a>, sowie seinen <a href="https://www.sueddeutsche.de/politik/usa-wahl-trump-biden-arizona-hispanics-1.6465857">Text über Latinos, die Donald Trump unterstützen</a>. </p>
+<p>Hier können Sie die Podcast-Folge <a href="https://www.sueddeutsche.de/politik/podcast-usa-wahlen-migration-trump-biden-mexiko-1.6453978">„Migrationspolitik in den USA: Wahltaktik statt Lösungen“</a> nachhören.</p>
+<p>Redaktionsschluss für diese Sendung war Mittwoch, 29.05.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Nadja Schlüter, Peter Burghardt</p>
+<p>Redaktion: Nadja Schlüter</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über LiveNOW from Fox und PBS NewsHour.</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1463088-m-8b540afef4737341df52544e2267b377.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/12-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der dritte Kandidat: Wem wird Robert F. Kennedy gefährlich?</h2>
+                    <time datetime="2024-05-17T00:00:11+00:00">17.05.2024</time>
+                </header>
+                <p><p>Im November wird entweder Joe Biden oder Donald Trump zum amerikanischen Präsidenten gewählt. Aber zur Wahl stehen auch Kandidaten und Kandidatinnen, die als Unabhängige oder für eine dritte Partei antreten. Sie haben im Zwei-Parteien-System der USA keine Chance, zu gewinnen – aber sie können den Wahlausgang trotzdem entscheidend beeinflussen. </p>
+<p>2024 heißt einer dieser unabhängigen Kandidaten Robert F. Kennedy junior. Der Neffe des ehemaligen Präsidenten John F. Kennedy ist bekannt für sein Engagement für Umweltschutz, seine Impfgegnerschaft und seinen Hang zu kruden Verschwörungstheorien. Aktuell bekommt er eine Menge Aufmerksamkeit, unter anderem wegen verhältnismäßig hoher Zustimmungswerte bei Wahlumfragen. Auf das Duell Biden gegen Trump könnte er darum einen entscheidenden Einfluss haben.</p>
+<p>Welchem Kandidaten er mehr Wählerstimmen abspenstig machen wird, wie sein politisches Programm aussieht und was ein Wurm in Kennedys Gehirn mit all dem zu tun hat, darum geht es in dieser Folge von „Auf den Punkt – Die US-Wahl“.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 16.05.2024, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über Youtube @TeamKennedy24, Youtube @AmericanValues24, Youtube @JoeBiden, Twitter @StateDept, Truth Social @realDonaldTrump, NBC News, CBS Boston und MSNBC.</p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1463086-m-454e6e6edf8c8de8e586b2437dfc2d34.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/11-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Sechs Monate vor der Wahl: Zwischenstand im US-Wahlkampf</h2>
+                    <time datetime="2024-05-10T00:00:10+00:00">10.05.2024</time>
+                </header>
+                <p><p>US-Präsident Joe Biden muss sich außenpolitisch auf den Nahost-Konflikt konzentrieren und innenpolitisch mit den damit verbundenen Campus-Protesten umgehen. Donald Trump verbringt derweil viel Zeit im Gerichtssaal in New York und muss 10 000 Dollar Strafe zahlen, weil er mehrfach gegen die gerichtliche Anordnung verstoßen hat, die Jury nicht einzuschüchtern. Sollte er das weiterhin tun, hat der Richter ihm sogar mit Gefängnis gedroht.</p>
+<p>Die beiden US-Präsidentschaftskandidaten haben also gerade genug Themen und Probleme, die sie beschäftigen – und der Wahlkampf scheint dadurch beinahe stillzustehen. In so gut wie allen Umfragen liegen Biden und Trump darum auch weiterhin gleichauf, keiner hat sich bisher einen nennenswerten Vorsprung erarbeiten können. </p>
+<p>Wie aussagekräftig sind diese Umfragen zum jetzigen Zeitpunkt? Auf welche Themen setzen die Kandidaten, um Prozentpunkte zu gewinnen, welche Taktiken verfolgen sie? Und wie ist die Stimmung in den beiden Parteien und in der Wählerschaft? Um den Zwischenstand im US-Wahlkampf ein halbes Jahr vor der Wahl geht es in dieser Folge von „Auf den Punkt: Die US-Wahl“.</p>
+<p>Den Text von Boris Herrmann und Christian Zaschke über den Trump-Prozess und die Aussage von Stormy Daniels <a href="https://www.sueddeutsche.de/politik/donald-trump-stormy-daniels-prozess-kreuzverhoer-new-york-intime-details-1.7020372">finden Sie hier</a>. </p>
+<p>Redaktionsschluss für diese Sendung war Mittwoch, 08.05.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über THV11, Youtube @JoeBiden, Univision Noticias, The Times and The Sunday Times, MSNBC, CNN, CBS News, ABC News, Good Morning America und NBC News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1449895-m-8ed9a7ff66ec61ecce320c986dd7f961.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/10-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Heftige Proteste an den Unis: Verliert Joe Biden die jungen Wähler?</h2>
+                    <time datetime="2024-04-26T00:00:09+00:00">26.04.2024</time>
+                </header>
+                <p><p>Hunderte Personen wurden diese Woche allein an der Elite-Universität Columbia in New York vorübergehend festgenommen. Doch Protestcamps und Festnahmen gibt es inzwischen im gesamten Land. Teils haben die Universitäten der USA ihren Unterricht auf Online-Veranstaltungen umgestellt oder Präsenztermine abgesagt. Denn zu heftig wird über die Rolle der USA im Gaza-Krieg debattiert, und auch grundsätzlicher über Antisemitismus, antimuslimischen Rassismus und die Grenzen der Meinungsfreiheit. </p>
+<p>Die Proteste haben das Potenzial zu einem der entscheidenden Momente für diesen Wahlkampf 2024 zu werden. Denn gerade die jungen Wählerinnen und Wähler verhalfen Joe Biden 2020 zum Sieg gegen Donald Trump. Für die Republikaner bieten die teils überzogenen und stark verkürzten Parolen der aktuellen Proteste dagegen eine weitere Möglichkeit, gegen vermeintlich verkommene Eliten zu mobilisieren. Zudem können sie sich – wie an diesem Mittwoch der republikanische Sprecher des Repräsentantenhauses Mike Johnson – klar Stellung für Israels Regierung beziehen. Wie verworren die Situation ist, besprechen diese Folge Stefan Kornelius und Vinzent-Vitus Leitgeb. 
+Redaktionsschluss für diese Sendung war Donnerstag, 25.04.2024, um 17 Uhr.</p>
+<p>Zum Weiterlesen:</p>
+<p>Den Newsletter zur <a href="https://www.sueddeutsche.de/kolumne/us-wahl-2024-newsletter-1.6388585">US-Wahl können Sie hier abonnieren.</a></p>
+<p>Den Text zum möglichen <a href="https://www.sueddeutsche.de/wirtschaft/tiktok-verbot-usa-ultimatum-bytedance-1.6566023">TikTok-Verbot in den USA lesen Sie hier.</a></p>
+<p>Moderation, Redaktion: Stefan Kornelius, Vinzent-Vitus Leitgeb</p>
+<p>Redaktion: Johannes Korsche</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über MSNBC, ABC, PBS News Hour, Forbes Breaking News Reuters.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1441948-m-7aca96e4dcd65625128cc3e98f41b488.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/9-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ist das noch Demokratie? Das US-Wahlsystem und seine Fehler</h2>
+                    <time datetime="2024-05-03T00:00:08+00:00">03.05.2024</time>
+                </header>
+                <p><p>Mehrheitswahlrecht, Wahlkreismanipulation, unproportionale Repräsentanz: Wenn die Amerikaner und Amerikanerinnen wählen, spiegelt das Ergebnis am Ende oft nicht – oder nur teilweise – ihren Willen wider. Das liegt an einem sehr komplizierten und vor allem veralteten Wahlsystem. Viele Menschen im Land verlieren dadurch das Vertrauen in die Demokratie. </p>
+<p>In dieser Folge von "Auf den Punkt: Die US-Wahl" geht es um die Rolle des Electoral College, Aktivismus gegen "Gerrymandering", um Reformideen für das Wahlsystem und die Frage, warum sie bisher immer gescheitert sind.</p>
+<p>Zum Weiterlesen:
+<a href="https://www.sueddeutsche.de/politik/us-wahl-georgia-afroamerikaner-reportage-trump-1.6429919">Hier finden Sie den Text des SZ-Korrespondenten Peter Burghardt über sein Treffen mit der Aktivistin Helen Butler. </a></p>
+<p>Redaktionsschluss für diese Sendung war Mittwoch, 17.04.2024, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über CNN und NBC News.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1433428-m-62efd9b38d5bc05a4763a554e1b6ebff.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/8-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Schwangerschaftsabbruch: Kulturkampf wird zu Wahlkampf</h2>
+                    <time datetime="2024-04-19T00:00:07+00:00">19.04.2024</time>
+                </header>
+                <p><p>In den vergangenen Jahren wurde in vielen US-Bundesstaaten das Recht auf einen Schwangerschaftsabbruch eingeschränkt oder Abbrüche wurden sogar fast vollständig verboten. Möglich wurde das durch ein Urteil des Obersten Gerichtshofs der USA im Jahr 2022, mit dem das landesweite Recht auf Abtreibung gekippt wurde. Für diese Entscheidung war wiederum maßgeblich der damalige Präsident Donald Trump verantwortlich, der in seiner Amtszeit den Supreme Court mit mehrheitlich konservativen Richtern besetzt hat. 
+Das Thema ist nun im Wahlkampf vieldiskutiert. Viele Anhänger der US-Demokraten sind für ein umfassendes Recht auf Schwangerschaftsabbruch, viele republikanische Wähler und Wählerinnen wollen Abbrüche am liebsten komplett verbieten – das Thema spaltet das Land. </p>
+<p>Wie die beiden Lager die Debatte führen, welcher Kandidat dabei auf welche Strategien setzt und wieso Schwangerschaftsabbrüche überhaupt zu einem Kulturkampf- und dann auch zu einem parteipolitischen Wahlkampfthema geworden sind, darum geht es in dieser Folge von "Auf den Punkt: Die US-Wahl".
+Zum Weiterlesen und -hören:</p>
+<p>Über den aktuellen Stand aller Verfahren gegen Trump und die Taktik des ehemaligen US-Präsidenten <a href="https://www.sueddeutsche.de/politik/trump-gericht-anklagepunkte-prozesse-us-wahl-1.6553036">lesen Sie in diesem Text</a>.</p>
+<p>Mehr über die Auswahl der Geschworenen <a href="https://www.sueddeutsche.de/politik/usa-trump-schweigegeld-stormy-daniels-jury-probleme-fair-prozess-1.6555784">lesen Sie hier</a>.</p>
+<p>Die Podcast-Folge über die Verfahren gegen Donald Trump <a href="https://www.sueddeutsche.de/politik/podcast-usa-wahlen-anklage-verfahren-trump-1.6476137">können Sie hier hören</a>.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 18.04.2024, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über Truth Social @realDonaldTrump, Reuters, Washington Post, NBC News, Hindustan Times, CBS News, Twitter @JoeBiden und MSNBC.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1412018-m-cca8b47a0d046bd278d26851317a277d.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/7-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Naher Osten bis Indopazifik: US-Außenpolitik im aktuellen Wahlkampf</h2>
+                    <time datetime="2024-04-12T00:00:06+00:00">12.04.2024</time>
+                </header>
+                <p><p>In dieser Woche haben die USA ein verhältnismäßig lautes Machtwort gegenüber Israel gesprochen, weiter über die Ukraine-Hilfe gestritten und eine neue Verteidigungsallianz im Indopazifik geschmiedet. Viel Welt- und Außenpolitik also, die aber auch Auswirkungen auf die Innenpolitik und auf die Wähler und Wählerinnen in den USA hat.</p>
+<p>Wie genau und inwiefern die außenpolitischen Entscheidungen in dieser Woche auch mit der Vorbereitung auf eine mögliche Trump-Präsidentschaft zu tun haben, darum geht es in dieser Folge von "Auf den Punkt – Die US-Wahl".</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 11.04.2024 um 17 Uhr.</p>
+<p>Zum Weiterlesen:</p>
+<p>Mehr zum Treffen zwischen Joe Biden und Japans Premierminister Fumo Kishida [finden Sie in diesem Text von Peter Burghardt.]
+(<a href="https://www.sueddeutsche.de/politik/pazifik-botschaften-staerke-china-1.6541913">https://www.sueddeutsche.de/politik/pazifik-botschaften-staerke-china-1.6541913</a>)</p>
+<p>[Einen Text von US-Korrespondent Peter Burghardt über US-Außenminister Blinkens Nahost-Reise finden Sie HIER.]
+(<a href="https://www.sueddeutsche.de/politik/israel-gaza-waffenstillstand-blinken-usa-1.6476048">https://www.sueddeutsche.de/politik/israel-gaza-waffenstillstand-blinken-usa-1.6476048</a>)</p>
+<p>[Hier finden Sie einen Text von US-Korrespondent Fabian Fellmann über US-Hilfen für die Ukraine]
+(<a href="https://www.sueddeutsche.de/politik/usa-kongress-ukraine-hilfe-blockade-republikaner-1.6516477">https://www.sueddeutsche.de/politik/usa-kongress-ukraine-hilfe-blockade-republikaner-1.6516477</a>) </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über Reuters, The Late Show with Stephen Colbert und Fox News.</p></p>
+                <a href="https://audio.podigee-cdn.net/1411375-m-105517228d137b5bbda33f61a9cb0331.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ex-Präsident auf der Anklagebank: Die Trump-Verfahren und ihre Konsequenzen</h2>
+                    <time datetime="2024-03-22T00:00:05+00:00">22.03.2024</time>
+                </header>
+                <p><p>Am 25. März hätte in New York das sogenannte "Hush Money Trial" gegen Donald Trump beginnen sollen. In dem Fall geht es darum, dass Trump im Jahr 2016 seine Buchhaltung gefälscht haben soll, um eine Schweigegeld-Zahlung an eine Pornodarstellerin zu vertuschen. Jetzt aber wurde der Prozess verschoben und soll frühestens Mitte April starten. </p>
+<p>Es ist aber nicht das einzige Verfahren. Insgesamt vier strafrechtliche Verfahren laufen gegen den ehemaligen US-Präsidenten: In New York, Georgia, Florida und Washington D.C., hinzu kommen zivilrechtliche Klagen. Aber: Alle Verfahren verzögern sich, werden immer wieder aufgeschoben und es ist unklar, ob überhaupt eines vor der Wahl im November mit einem Urteil endet. </p>
+<p>Wie der Stand der Verfahren ist und wie sie die US-Wahl beeinflussen können, darüber sprechen in dieser Folge von "Auf den Punkt: Die US-Wahl" Nadja Schlüter und Stefan Kornelius.</p>
+<p>Zum Weiterlesen und -hören:</p>
+<p>Hier finden Sie die <a href="https://www.sueddeutsche.de/politik/donald-trump-verfahren-prozesse-us-praesidentschaftskandidat-1.5779059">Übersicht über alle Klagen gegen Donald Trump.</a></p>
+<p>Hier geht es zur <a href="https://open.spotify.com/episode/2Xa3q1RXayQX8zxjbLmk4u">"Geschichte Daily"-Folge über die US-Wahl 2000.</a></p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 21.03.2024, um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Maja Goertz, Johannes Korsche</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über MSNBC, The Economic Times, Face the Nation, AP Archive.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1384162-m-3ea11d03eec2b3b66b3692345bef62a9.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Migrationspolitik in den USA: Wahltaktik statt Lösungen</h2>
+                    <time datetime="2024-03-15T00:00:04+00:00">15.03.2024</time>
+                </header>
+                <p><p>Donald Trump sorgt seit Wochen dafür, dass ein Gesetz zur Grenzsicherung im Süden der USA im Repräsentantenhaus blockiert wird – vor allem aus Wahlkampftaktik. Denn die aktuell chaotische Lage an der Grenze hilft ihm im Duell mit Joe Biden. Bei einem Besuch an der US-Mexikanischen Grenze spricht Trump von „Biden-Migrant-Crime“ und darüber, dass Biden angeblich erlaube, dass das Land von illegal eingewanderten Migranten überrannt wird.</p>
+<p>Auf der anderen Seite sagt auch Präsident Joe Biden: Die Lage sei schwierig. Er übt aber allerdings Kritik an den Republikanern und appelliert an die Zusammenarbeit beider Parteien.</p>
+<p>Warum braucht das Migrationssystem der USA eine Reform? Wieso hat sich bis jetzt nichts getan? Und warum wollen Hispanics und Latinos vor allem Donald Trump wählen? Über diese Themen sprechen in der dritten Folge von "Auf den Punkt: Die US-Wahl" der SZ-Politik-Chef Stefan Kornelius und die SZ-Audio-Redakteurin Nadja Schlüter.</p>
+<p>Redaktionsschluss für diese Sendung war Donnerstag, 14.03.2024 um 17 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Maja Goertz, Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über CNN, PBS News Hour, Washington Post, The White House, NBC News</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1384130-m-d857d99892daab95b932165378df8492.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Biden vs. Trump: Das Duell beginnt</h2>
+                    <time datetime="2024-03-08T00:00:03+00:00">08.03.2024</time>
+                </header>
+                <p><p>Im amerikanischen Wahlkalender hat der Super Tuesday wie erwartete Klarheit gebracht: Wenn kein unvorhersehbares Ereignis das US-Präsidentschaftsrennen grundlegend verändert, werden Joe Biden und Donald Trump gegeneinander antreten. Also ein amtierender Präsident gegen einen ehemaligen Präsidenten – das hat es 1912 zum letzten Mal gegeben.</p>
+<p>Weil am Super Tuesday in 15 Bundesstaaten die Kandidaten der beiden Parteien bestimmt worden sind, lohnt es sich, die Entscheidung der Wählerinnen und Wähler genauer anzuschauen: Wer hat für Donald Trump gestimmt? Was machen nun die Anhänger von Nikki Haley, die wie erwartet ihre Kandidatur aufgegeben hat? Und was macht Präsident Joe Biden, der ihre Wählerklientel, die moderaten Republikaner, auch erreichen will? Hat er ihnen in seiner “State of the Union Address”, der Rede zur Lage der Nation, inhaltliche Angebote gemacht?
+Über diese Themen sprechen in der zweiten Folge von "Auf den Punkt: Die US-Wahl" der SZ-Politik-Chef Stefan Kornelius und die SZ-Audio-Redakteurin Nadja Schlüter.</p>
+<p>Redaktionsschluss für diese Sendung war Freitag, 08.03.24 um 08 Uhr. </p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über Reuters, PBS, NBC und The White House.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1384129-m-d15edb0f12eadc1a21185d6220f2b614.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Warum Nikki Haley nicht aufgibt</h2>
+                    <time datetime="2024-03-01T00:00:02+00:00">01.03.2024</time>
+                </header>
+                <p><p>Der kommende Dienstag, der 5. März 2024, ist der sogenannte "Super Tuesday", an dem in 16 US-Bundesstaaten und einem US-Terrotorium Vorwahlen stattfinden. Dabei werden mehr als ein Drittel der Delegiertenstimmen verteilt, mit denen im Sommer die Präsidentschaftskandidaten der Demokraten und der Republikaner gewählt werden. In der Vergangenheit wurde am Super Tuesday oft viel entschieden: Kandiaturen wurden beendet oder ein Kandidat konnte sich einen großen Vorsprung auf die anderen Bewerber erarbeiten. Doch diesmal steht schon vorher so gut wie fest, welche beiden Kandidaten bei der Wahl im November gegeneinander antreten werden: Der amtierende Präsident und Demokrat Joe Biden und der Ex-Präsident und Republikaner Donald Trump.</p>
+<p>Aber es gibt in diesem Vorwahlkampf eine Person, die es noch ein bisschen spannend macht: Nikki Haley, Trumps einzige verbliebene Konkurrentin im Rennen um die Kandidatur der Republikaner. Über ihre Rolle und die Frage, was für sie ein Erfolg am Super Tuesday wäre, sprechen der SZ-Politik-Chef Stefan Kornelius und die SZ-Audio-Redakteurin Nadja Schlüter in der ersten Folge des neuen US-Wahl-Podcasts. Und auch darüber, wieso Joe Biden in dieser Woche einen Denkzettel von der eigenen Wählerschaft bekommen hat. 
+Redaktionsschluss für diese Sendung war Donnerstag, 29.02.24 um 17 Uhr.</p>
+<p>Zum Weiterhören und -lesen:</p>
+<p><a href="https://www.sueddeutsche.de/thema/Auf_den_Punkt:_Die_US-Wahl">Hier geht es zum Kanal von "Auf den Punkt: Die US-Wahl".</a></p>
+<p><a href="https://www.sueddeutsche.de/service/kostenloser-newsletter-us-wahl-2024-1.6334045?utm_source=Shortlink&amp;utm_campaign=uswahl-newsletter&amp;utm_content=uswahl">Hier können Sie sich für den US-Wahl-Newsletter der SZ anmelden. </a></p>
+<p>Moderation, Redaktion: Stefan Kornelius, Nadja Schlüter</p>
+<p>Redaktion: Vinzent-Vitus Leitgeb</p>
+<p>Produktion: Carolin Lenk</p>
+<p>Zusätzliches Audiomaterial über C-Span, Reuters, X 
+@Listen2michigan.</p>
+<p>Klicken Sie hier, wenn Sie sich für ein Digitalabo der SZ interessieren, um unsere exklusiven Podcast-Serien zu hören: <a href="http://www.sz.de/mehr-podcasts">www.sz.de/mehr-podcasts</a></p>
+<p><a href="https://cmk.sueddeutsche.de/cms/articles/15600/anzeige/podcast-werbepartnerinnen/hier-gibt-s-weitere-infos-zu-den-angeboten-unserer-werbepartner-innen">Mehr über die Angebote unserer Werbepartnerinnen und -partner finden Sie HIER</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1384128-m-f5103eeac7e5e3f199222058f9a6ce26.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://us-wahl.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
