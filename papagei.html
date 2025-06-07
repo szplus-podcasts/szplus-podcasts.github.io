@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Der Papageienkönig</h2>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,ssJjQUSesAkeo3tbDOdOnkiaCTZb7fjRrYEITYsmYAIU=/https://main.podigee-cdn.net/uploads/u1617/af572161-cf0c-4a50-b136-c10a61b1f37c.jpg" alt="Der Papageienkönig">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/papagei.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Der Spix-Ara ist der seltenste und wertvollste Vogel der Welt. Er wurde vor über 200 Jahren von einem deutschen Abenteurer in Brasilien entdeckt – und seitdem wollte die ganze Welt so einen Vogel haben: Papageienzüchter, Zoodirektoren, arabische Scheichs und andere Millionäre. Der Spix-Ara wurde gejagt und fast ausgerottet. </p><p>Bis dann wieder ein Deutscher kam, um den Vogel zu retten: Martin Guth. Ein ehemaliger Türsteher aus der DDR mit Kontakten zur Berliner Schattenwelt. Er legt als Vogelzüchter einen filmreifen Aufstieg hin und ist heute einer der umstrittensten Artenschützer der Welt. </p><p>Wer rettet hier eigentlich wen? Der Deutsche den Spix-Ara? Oder der Spix-Ara den Deutschen? Geht es Martin Guth wirklich um das Überleben dieses Vogels oder doch eher ums Geschäft? Die Suche nach Antworten führt von Brandenburg bis nach Indien und in die irre und gefährliche Welt des Wildtierhandels.</p><p>Hören Sie die erste Folge kostenlos – alle weiteren Folgen wöchentlich ab dem 28. Mai mit SZ Plus.</p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Ein Team von Verbrechern (3/6)</h2>
+                    <time datetime="2025-06-04T00:00:03+00:00">04.06.2025</time>
+                </header>
+                <p><p>Im Jahr 2005 kauft Martin Guth seine ersten drei Spix-Aras. Und wird Teil eines Bündnisses von reichen Männern, das den seltenen Vogel retten will. Aber dann gibt es Streit, unter anderem wegen Martin Guth und der Frage, ob es ihm wirklich um den Artenschutz geht. SZ-Reporter Christoph Cadenbach trifft im Loro Parque auf Teneriffa einen alten Gegenspieler von Guth, der erzählt, dass ihm die Rettung des Spix-Aras zu schmutzig wurde.</p></p>
+                <a href="https://audio.podigee-cdn.net/1958305-m-f8c96e80550676fb196856ac396b4fc3.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://papagei.podigee.io/3-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Der Problemlöser (2/6)</h2>
+                    <time datetime="2025-05-28T00:00:02+00:00">28.05.2025</time>
+                </header>
+                <p><p>Martin Guth begeistert sich schon früh für exotische Vögel - und für gute Geschäfte. Dabei lernt er einflussreiche Bekannte kennen.</p>
+<hr>
+<p>Feedback:<a href="https://easy-feedback.de/umfrage/1990890/Pz5BSn-multi-221794">Hier geht es zur Umfrage</a></p>
+<hr></p>
+                <a href="https://audio.podigee-cdn.net/1941988-m-e74b32eae4f4545cbff5edf988db3983.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://papagei.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Guth und Böse (1/6)</h2>
+                    <time datetime="2025-05-28T00:00:01+00:00">28.05.2025</time>
+                </header>
+                <p><p>Eine anonyme Quelle aus der Welt des Wildtierhandels meldet sich und macht die Reporter auf Martin Guth und seinen Verein aufmerksam. Schnell wird klar, dass mehr dahinter steckt.</p>
+<hr>
+<pre><code>Feedback zur Serie und zu den SZ Plus-Podcasts: [Hier geht es zur Umfrage](https://easy-feedback.de/umfrage/1990890/Pz5BSn-multi-221794)
+</code></pre>
+<hr></p>
+                <a href="https://audio.podigee-cdn.net/1941932-m-0986d32ee31dbef82c8374ddca6b2d3b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://papagei.podigee.io/1-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Ist das gerecht?</h2>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,s2ZKH_QkUBlwOPGGLipjoxHiqxrFFWyVMNEbmbuGBbg0=/https://main.podigee-cdn.net/uploads/u1617/d153ad5f-b88d-4dd3-8641-f367ae271c7a.jpg" alt="Ist das gerecht?">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/ist-das-gerecht.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Ein Interviewpodcast mit Ronen Steinke: Egal, ob es um die großen, aktuellen Krisen dieser Zeit geht, um jahrzehntelang geführte gesellschaftliche Debatten oder auch einfach nur um Konflikte im Alltag – in all diesen Bereich stellen wir uns immer wieder diese eine Frage:  </p><p>Ist das gerecht?</p><p>Genau dieser Frage geht Ronen Steinke deshalb in diesem Podcast nach. Der gelernte Jurist und leitende Redakteur der SZ spricht mit prominenten Gästen und Experten und Expertinnen über juristische und politische Themen, von Schwangerschaftsabbruch über Wehrplicht bis Bildung und Wohnraum. Gerechtigkeit und Rechtsstaat – oft abstrakte Konzepte, die uns aber alle betreffen – werden dabei greifbar und verständlich.  </p><p>Jeden zweiten Freitag erscheint eine neue Folge. Die erste Folge ist kostenlos, alle weiteren können Sie mit SZ Plus hier, in der weißen SZ-App, auf www.sz.de/gerecht und auf Spotify hören.</p><p>Jeden zweiten Freitag erscheint eine neue Folge. Die erste Folge ist kostenlos, alle weiteren können Sie mit SZ Plus in der weißen SZ-App, auf www.sz.de/gerecht und auf Spotify hören.</p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Trailer: Ist das gerecht? - Interviewpodcast mit Ronen Steinke</h2>
+                    <time datetime="2025-05-16T00:01:39+00:00">16.05.2025</time>
+                </header>
+                <p><p>Egal, ob es um die großen, aktuellen Krisen dieser Zeit geht, um jahrzehntelang geführte gesellschaftliche Debatten oder auch einfach nur um Konflikte im Alltag – in all diesen Bereich stellen wir uns immer wieder diese eine Frage:  </p>
+<p>Was ist gerecht? </p>
+<p>Genau dieser Frage geht Ronen Steinke deshalb in diesem Podcast nach. Der gelernte Jurist und leitende Redakteur der SZ spricht mit prominenten Gästen und Experten und Expertinnen über juristische und politische Themen, von Schwangerschaftsabbruch über Wehrpflicht bis Bildung und Wohnraum. Gerechtigkeit und Rechtsstaat – oft abstrakte Konzepte, die uns aber alle betreffen – werden dabei greifbar und verständlich.  </p>
+<p>Jeden zweiten Freitag erscheint eine neue Folge. Die erste Folge ist kostenlos, alle weiteren können Sie mit SZ Plus hier, in der weißen SZ-App, auf <a href="http://www.sz.de/gerecht">www.sz.de/gerecht</a> und auf Spotify hören.</p></p>
+                <a href="https://audio.podigee-cdn.net/1928508-m-a619a328c00181da20ad279f9f1e0ed9.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://ist-das-gerecht.podigee.io/99-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Annette Widmann-Mauz über das Recht auf Abtreibung</h2>
+                    <time datetime="2025-06-06T00:00:03+00:00">06.06.2025</time>
+                </header>
+                <p><p>Mehr als ein Vierteljahrhundert war sie Mitglied des Deutschen Bundestags und zehn Jahre Vorsitzende der Frauen-Union: Annette Widmann-Mauz ist eine bekannte Größe in der CDU. In all den Jahren hat sie sich immer wieder für Frauenrechte starkgemacht und etwa für eine Frauenquote in der eigenen Partei gekämpft. Ein Thema, das Widmann-Mauz ebenfalls sehr am Herzen liegt, ist Schwangerschaftsabbruch – hier vertritt sie allerdings eine Haltung, mit der sie sich die Kritik linker, liberaler und junger Feministinnen einhandelt.</p>
+<p>Seit einem Urteil des Bundesverfassungsgerichts in den Neunzigerjahren gilt in Deutschland: Unter bestimmten Voraussetzungen ist eine Abtreibung in den ersten zwölf Wochen einer Schwangerschaft straffrei - trotzdem aber gilt sie weiter als rechtswidrig. Kritiker und Kritikerinnen dieser Regelung wünschen sich schon lange, dass der entsprechende Paragraf gestrichen und Schwangerschaftsabbrüche außerhalb des Strafrechts geregelt werden.</p>
+<p><strong>Annette Widmann-Mauz</strong> hingegen hält den betreffenden Paragrafen 218 für einen guten und wichtigen Kompromiss. Sie argumentiert mit dem christlichen Glauben – und dem Grundgesetz: „Menschliches Leben darf nicht getötet werden“, sagt sie im Gespräch mit dem SZ-Rechtsexperten Ronen Steinke. „Wenn wir einmal sagen, menschliches Leben zu töten ist in Ordnung und kein Problem, dann würde unsere Rechtsordnung insgesamt ins Wanken geraten.“ Dass ein Abbruch in Ausnahmefällen nicht bestraft wird, hält sie jedoch für ebenso wichtig: Es sei nicht menschenwürdig, eine Frau zu zwingen, ein Kind auszutragen, wenn sie damit körperlich oder psychisch nicht zurechtkomme. Frauen, die einen Abbruch vornehmen ließen, dürften dafür auch nicht stigmatisiert werden.</p>
+<p>Für unverzichtbar hält Widmann-Mauz die vorherige Pflicht zur Beratung und die dreitägige Bedenkzeit: „Der Staat schützt das ungeborene Leben, indem er der schwangeren Frau so viel wie möglich an Beratung zukommen lässt und ihr Wege aufzeigt, wie sie mit dem vielleicht ungewünschten Kind trotzdem ein gutes Leben führen kann.“</p>
+<p>Außerdem diskutieren <strong>Ronen Steinke und Annette Widmann-Mauz</strong> in dieser Folge des neuen SZ-Interviewpodcasts <strong>„Ist das gerecht?“</strong> über die Versorgungslage für Schwangere, die in Deutschland einen Abbruch vornehmen lassen wollen, die gesellschaftlichen und rechtlichen Hürden für Ärztinnen und Ärzten, die einen solchen Eingriff vornehmen, und die ethisch besonders schwierige Frage der Spätabtreibungen.</p>
+<p>Moderation, Redaktion: Ronen Steinke
+Redaktionelle Betreuung: Nadja Schlüter
+Produktion: Benjamin Markthaler, Julia Ongyerth</p>
+<p>Sie erreichen die Redaktion dieses Podcasts unter <a href="mailto:podcast@sz.de">podcast@sz.de</a> - wir freuen uns über Anregungen, Lob oder Kritik.</p></p>
+                <a href="https://audio.podigee-cdn.net/1957773-m-31c4a4bab79342248be28c0248685206.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://ist-das-gerecht.podigee.io/3-annette-widmann-mauz-uber-das-recht-auf-abtreibung/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ole Nymoen über Wehrpflicht</h2>
+                    <time datetime="2025-05-23T00:00:01+00:00">23.05.2025</time>
+                </header>
+                <p><p>Es wird in Deutschland wieder über Kriegstüchtigkeit diskutiert, über Aufrüstung - und über eine mögliche Wehrpflicht. Was kommt da auf die junge Generation zu? Ole Nymoen ist 27 Jahre alt, Podcaster, Journalist und Buchautor: „Warum ich niemals für mein Land kämpfen würde“, sein Buch, das im März 2025 erschienen ist, hat hohe Wellen geschlagen. Darin erklärt er einerseits seine persönlichen Gründe gegen den Dienst an der Waffe, aber auch warum er den Kriegsdienst grundsätzlich für verwerflich hält.</p>
+<p>Im Podcast erklärt er, dass die Gründe dafür eigentlich gar nicht so relevant sind. Denn im Zweifelsfall habe ja niemand die Wahl: Jeder Staat der Welt müsse sich ja im Zweifelsfall darauf verlassen können, dass die eigenen Bürger seine Souveränität verteidigen würden - sonst wäre es kein Staat. Im Endeffekt sei es doch so: Nicht der Staat schützt seine Bürger, sondern genau andersherum.</p>
+<p>Mit diesem Interview startet Ronen Steinkes neuer SZ-Podcast „Ist das gerecht?“. Der gelernte Jurist und leitende Redakteur der SZ spricht in dem Format mit prominenten Gästen und Experten und Expertinnen über politische und philosophische Themen - immer unter dem Überbegriff der Gerechtigkeit. Das Ziel: mittels kontroverser Diskussionen die eigene Haltung zu schärfen - oder auch mal zu überdenken.</p>
+<p>**Alle 14 Tage gibt es ab sofort eine neue Folge von "Ist das gerecht?" mit SZ Plus. Solltet ihr noch kein SZ Plus-Abo haben, so findet ihr unter <a href="http://sz.de/gerechtplus">sz.de/gerechtplus</a> ein exklusives Probeabo zum Testen und Anhören aller SZ-Podcasts. Mit einem Abo unterstützt ihr die Arbeit der Redaktion und damit den unabhängigen Journalismus. **</p>
+<p>Moderation, Redaktion: Ronen Steinke
+Redaktionelle Betreuung: Nadja Schlüter, Laura Terberl
+Produktion: Carolin Lenk, Julia Ongyerth</p>
+<p>Sie erreichen die Redaktion dieses Podcasts unter <a href="mailto:podcast@sz.de">podcast@sz.de</a> - wir freuen uns über Anregungen, Lob oder Kritik.</p></p>
+                <a href="https://audio.podigee-cdn.net/1928512-m-a9f224ce5a47884eca4ab566d0be0f4f.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://ist-das-gerecht.podigee.io/1-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
