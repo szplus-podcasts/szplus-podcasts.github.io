@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Die Jägerin - Alle Folgen mit SZ Plus</h2>
+                
+                  <h3></h3>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sEj-ICjcmSY3kHQL2sdpjKB96bV9MOU4x8DPWZzxPxhI=/https://main.podigee-cdn.net/uploads/u1617/dca277cd-1edb-451b-bc52-b3a40d0a75c4.jpg" alt="Die Jägerin - Alle Folgen mit SZ Plus">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/die-jaegerin.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Im Sommer 2023 kommt bei den Journalistinnen Leonie Bartsch und Linn Schütze eine Nachricht an. Darin steht: Ich kenne eine Frau, die seit über einem Jahr verurteilt hinter Gittern sitzt wegen Nachstellung. Obwohl sie inhaftiert ist, geht das Stalking weiter. Offensichtlich ist sie nicht die Täterin. <br> <br>Sitzt hier jemand zu Unrecht im Gefängnis? Und wenn diese Frau nicht die Täterin ist, wer war es dann? Oder: Wer ist es dann? </p><p>Damit beginnt eine lange Spurensuche, bei der die zwei Reporterinnen bald nicht mehr wissen, ob sie die Jägerinnen sind – oder die Gejagten.  <br> <br>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.  <br> <br>Hören Sie ab 21. Juli alle fünf Folgen werbefrei mit einem SZ Plus Abo auf www.sz.de/jaegerin oder bei Spotify unter www.sz.de/spotify-jaegerin. Das Probeabo gibt es schon ab 0,99 Euro. </p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Folge 5: FräuleinD </h2>
+                    <time datetime="2025-07-20T00:00:06+00:00">20.07.2025</time>
+                </header>
+                <p><p>Das Team erhält Zugang zur Kommandozentrale des Stalkings. Es offenbart sich ein perfides und erschütterndes System. Eine unerwartete Wendung soll die Reporterinnen und die vermeintliche Stalkerin jetzt zusammenführen.</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.</p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">https://www.sz.de/jaegerin</a> oder bei <a href="https://open.spotify.com/show/4wBPkWD13PpmjMNO59B7Om">Spotify.</a> </p>
+<p>Wir freuen uns, wenn ihr <a href="https://easy-feedback.de/umfrage/2015372/oU4zMA-multi-231679">hier</a> an unserer Podcast-Umfrage teilnehmt. </p></p>
+                <a href="https://audio.podigee-cdn.net/2022557-m-2027dd5913450bc212015c178977939d.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 4: Ein starkes Resultat</h2>
+                    <time datetime="2025-07-20T00:00:05+00:00">20.07.2025</time>
+                </header>
+                <p><p>Die Reporterinnen bemerken Parallelen ihres Falls zu einem Podcast der Süddeutschen Zeitung. Gemeinsam mit den SZ-Kollegen versuchen sie alle Puzzle-Teile zusammenzufügen. Eine sprachforensische Analyse bringt plötzlich Klarheit.</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.</p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">https://www.sz.de/jaegerin</a> oder bei <a href="https://open.spotify.com/show/4wBPkWD13PpmjMNO59B7Om">Spotify.</a> </p>
+<p>Wir freuen uns, wenn ihr <a href="https://easy-feedback.de/umfrage/2015372/oU4zMA-multi-231679">hier</a> an unserer Podcast-Umfrage teilnehmt. </p></p>
+                <a href="https://audio.podigee-cdn.net/2022555-m-e73762ab5df448a9d6c3fcee54a033f1.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 3: Die Eule</h2>
+                    <time datetime="2025-07-20T00:00:04+00:00">20.07.2025</time>
+                </header>
+                <p><p>Im Gespräch mit der verurteilten Stalkerin wird klar: Sie beteuert nicht nur ihre Unschuld, sie behauptet sogar, zu wissen, wer die wahren Täter sind. Die Frau verspricht den Reporterinnen Einblick in alle Unterlagen. Der Brief eines Zeugen wirft dann weitere Zweifel auf.</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.</p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">https://www.sz.de/jaegerin</a> oder bei <a href="https://open.spotify.com/show/4wBPkWD13PpmjMNO59B7Om">Spotify.</a> </p>
+<p>Wir freuen uns, wenn ihr <a href="https://easy-feedback.de/umfrage/2015372/oU4zMA-multi-231679">hier</a> an unserer Podcast-Umfrage teilnehmt. </p></p>
+                <a href="https://audio.podigee-cdn.net/2018660-m-5126795819e22904b0400801c5273b8e.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 2: Die Weidmanns</h2>
+                    <time datetime="2025-07-20T00:00:03+00:00">20.07.2025</time>
+                </header>
+                <p><p>Im Gespräch mit der verurteilten Stalkerin wird klar: Sie beteuert nicht nur ihre Unschuld, sie behauptet sogar, zu wissen, wer die wahren Täter sind. Die Frau verspricht den Reporterinnen Einblick in alle Unterlagen. Der Brief eines Zeugen wirft dann weitere Zweifel auf.</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.</p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">https://www.sz.de/jaegerin</a> oder bei <a href="https://open.spotify.com/show/4wBPkWD13PpmjMNO59B7Om">Spotify.</a> </p>
+<p>Wir freuen uns, wenn ihr <a href="https://easy-feedback.de/umfrage/2015372/oU4zMA-multi-231679">hier</a> an unserer Podcast-Umfrage teilnehmt. </p></p>
+                <a href="https://audio.podigee-cdn.net/2018624-m-7725751c9565c904d3989b72d829c1a9.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Folge 1: Ich bin dein Untergang</h2>
+                    <time datetime="2025-07-20T00:00:02+00:00">20.07.2025</time>
+                </header>
+                <p><p>Durch eine Instagram-Nachricht erfahren Leonie Bartsch und Linn Schütze von einem rätselhaften Stalking-Fall. Sie wollen mehr über die Frau erfahren, die angeblich unschuldig im Gefängnis sitzt. Wie ist es möglich, dass bei den Opfern noch immer Post ankommt, obwohl die Kommunikation der vermeintlichen Stalkerin in der Haft überwacht wird?</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions.</p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">https://www.sz.de/jaegerin</a> oder bei <a href="https://open.spotify.com/show/4wBPkWD13PpmjMNO59B7Om">Spotify.</a> </p>
+<p>Wir freuen uns, wenn ihr <a href="https://easy-feedback.de/umfrage/2015372/oU4zMA-multi-231679">hier</a> an unserer Podcast-Umfrage teilnehmt. </p></p>
+                <a href="https://audio.podigee-cdn.net/2018390-m-167952493b783976c8026e73ac887860.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ab 21.Juli – “Die Jägerin”</h2>
+                    <time datetime="2025-07-13T00:00:01+00:00">13.07.2025</time>
+                </header>
+                <p><p>Alles beginnt im Sommer 2023 mit einer Nachricht, die die Journalistinnen Leonie Bartsch und Linn Schütze auf Instagram bekommen. Es geht um eine Frau, die wegen Stalking im Gefängnis sitzt. Aber obwohl sie in Haft ist, geht das Stalking weiter. Ist sie also wirklich die Täterin? </p>
+<p>Damit beginnt eine lange Spurensuche, bei der die zwei Reporterinnen bald nicht mehr wissen, ob sie die Jägerinnen sind – oder die Gejagten.</p>
+<p>“Die Jägerin” ist eine Podcast-Serie der Süddeutschen Zeitung und Auf Ex Productions. </p>
+<p>Jede Woche eine neue Folge im Kanal “Die Jägerin” oder direkt ab dem 21. Juli werbefrei alle fünf Folgen hören mit SZ Plus Abo im Kanal “Die Jägerin - Alle Folgen mit SZ Plus” oder auf <a href="https://www.sz.de/jaegerin">sz.de/jaegerin</a>.</p>
+<p>Jetzt beide Kanäle abonnieren und nichts verpassen.</p></p>
+                <a href="https://audio.podigee-cdn.net/2010855-m-78e116ad774209d3141f0a8c714dd019.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://die-jaegerin.podigee.io/t1-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
