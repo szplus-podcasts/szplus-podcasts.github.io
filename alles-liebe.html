@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Alles Liebe</h2>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sQ03Nwa02iIAiAYD9bpuLpigsdAh0tSxyKRUnBl7_uzM=/https://main.podigee-cdn.net/uploads/u1617/b69107f6-29c3-4064-b717-731af25c015f.jpg" alt="Alles Liebe">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/alles-liebe.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Alle Wege führen zur Liebe! Wegen ihr steht man morgens auf. Sie ist für die meisten Menschen Sinn und Grund des Lebens.</p><p>Darum haben die Journalistin Lara Fritzsche und der Journalist Patrick Bauer ihren neuen Interview-Podcast „Alles Liebe“ genau diesem Thema gewidmet: der Liebe. Beherzt und einfühlsam sprechen sie mit bekannten deutschen Persönlichkeiten aus Kultur, Politik und Sport über ihre großen Lieben. Und merken schnell: Auf diese Weise lernt man Menschen am besten kennen. Denn was oder wen man liebt, was man unter Liebe versteht, wofür man sie aufs Spiel setzt und wonach man sich sehnt – das verrät viel Unbekanntes, selbst über Menschen, von denen man glaubt, schon einiges zu wissen.<br> <br>Die erste Folge hören Sie kostenlos ab dem 1. Oktober – alle weiteren mit SZ Plus.</p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Trailer - Der neue Podcast des SZ-Magazins</h2>
+                    <time datetime="2025-09-26T00:01:40+00:00">26.09.2025</time>
+                </header>
+                <p><p>Alle Wege führen zur Liebe! Wegen ihr steht man morgens auf. Sie ist für die meisten Menschen Sinn und Grund des Lebens. Darum haben die Journalistin Lara Fritzsche und der Journalist Patrick Bauer ihren neuen Interview-Podcast „Alles Liebe“ genau diesem Thema gewidmet: der Liebe. Beherzt und einfühlsam sprechen sie mit bekannten deutschen Persönlichkeiten aus Kultur, Politik und Sport über ihre großen Lieben. Und merken schnell: Auf diese Weise lernt man Menschen am besten kennen. Denn was oder wen man liebt, was man unter Liebe versteht, wofür man sie aufs Spiel setzt und wonach man sich sehnt – das verrät viel Unbekanntes, selbst über Menschen, von denen man glaubt, schon einiges zu wissen.
+ 
+Die erste Folge hören Sie kostenlos ab dem 1. Oktober – alle weiteren mit SZ Plus.</p></p>
+                <a href="https://audio.podigee-cdn.net/2092003-m-bfc758e020a740376a625f88f5d8e2d0.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/t100-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie findet man die echte Liebe, Caro Wahl?</h2>
+                    <time datetime="2025-10-01T00:00:40+00:00">01.10.2025</time>
+                </header>
+                <p><p>Caroline Wahl ist die derzeit erfolgreichste deutsche Liebesromanautorin, aber wie sieht eigentlich ihr eigenes Liebesleben aus? Hilft es, selbst verliebt zu sein, wenn man über die Liebe schreibt oder lenken Männer nur ab? Caro Wahl spricht mit uns im neuen Podcast „Alles Liebe“ über Tinder-Dates, schnelle Autos und erklärt, warum sie ihre große Liebe wohl schon vor zwanzig Jahren gefunden hat. </p></p>
+                <a href="https://audio.podigee-cdn.net/2131176-m-754e1413765d0c362b982cf4e08fd0cb.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/40-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie viel Öffentlichkeit verträgt die Liebe, Jule und Sascha Lobo?</h2>
+                    <time datetime="2025-10-01T00:00:39+00:00">01.10.2025</time>
+                </header>
+                <p><p>Sie sind vielleicht das bekannteste Internet-Paar Deutschlands: Jule und Sascha Lobo. Auf Instagram teilen sie ihre Beziehung, ihre Kinder und ihren Alltag – dafür werden sie gefeiert, aber auch angefeindet. Doch wie haben die beiden sich eigentlich kennengelernt? Und wie gelingt es ihnen, ihre Privatsphäre zu wahren? Ein Gespräch über die Liebe im grellen Licht der Öffentlichkeit.</p></p>
+                <a href="https://audio.podigee-cdn.net/2135733-m-6f7b4e222b32129c9ee1cf6960b3d5f3.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/39-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie viel Zeit braucht die Liebe, Ricarda Lang?</h2>
+                    <time datetime="2025-10-29T00:00:23+00:00">29.10.2025</time>
+                </header>
+                <p><p>Die Grünen-Politikerin Ricarda Lang hat ein turbulentes Jahr 2024 hinter sich. Im August heiratet sie ihre große Liebe und wenig später verliert sie ihre zweite große Liebe: ihren Platz in der ersten Reihe der deutschen Politik. Sie tritt als Fraktionsvorsitzende zurück, findet aber rasch zu ihrer neuen Stimme in der Öffentlichkeit.
+Mit uns spricht sie über Liebe und Verlust, über Körper und Politik, über Begehren, Selbstzweifel und Stärke.</p></p>
+                <a href="https://audio.podigee-cdn.net/2137198-m-40bd6d6accef17f223278d905e842de6.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/23-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie frei können Sie lieben, Ulrich Matthes?</h2>
+                    <time datetime="2025-10-15T00:00:22+00:00">15.10.2025</time>
+                </header>
+                <p><p>Der Schauspieler Ulrich Matthes hat sich vor vier Jahren im Rahmen der Aktion #ActOut im SZ-Magazin als homosexuell geoutet. Ein Geheimnis hatte er daraus auch vorher nicht gemacht, aber im Interview spricht er jetzt erstmals ausführlich über sein Aufwachsen als schwuler Mann und die Frage, wie tolerant die Theater- und Filmszene ist. Außerdem geht es um Liebeskummer-Tipps von Ex-Kanzlerin Angela Merkel.</p></p>
+                <a href="https://audio.podigee-cdn.net/2137197-m-ed6b5b1f9fa7248794ee13f9228041fc.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/22-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Podcast-Tipp: Flo-Jo – Die Jagd nach der schnellsten Frau der Welt</h2>
+                    <time datetime="2024-08-02T00:00:17+00:00">02.08.2024</time>
+                </header>
+                <p><p>Das ist die Geschichte einer Frau, die die ganze Welt in Atem hält. Und dann vergessen wird.
+Kurz vor dem Mauerfall stellt die US-Amerikanerin Florence Griffith-Joyner, genannt Flo-Jo, gleich zwei Weltrekorde im Sprint auf, über 100 und 200 Meter, ihre Wunder-Zeiten sind bis heute unerreicht.
+Flo-Jo ist eine Sensation: Eine schwarze Frau aus ärmsten Verhältnissen, die zum ersten Popstar der Sportgeschichte wird. Sie war ihrer Zeit in jeder Hinsicht voraus und hat nicht nur die Leichtathletik für immer verändert. Wer ist diese Frau, die so viel schneller als alle anderen war und deren Erfolg von Beginn an angezweifelt wurde? War sie gedopt? Hätten ihre Rekorde nie zählen dürfen?
+Die bekannten Sportreporter Christof Gertsch und Mikael Krogerus machen sich auf die Suche nach der Wahrheit über Flo-Jo. Aber das ist schwieriger als gedacht – und die Recherche steckt voller Überraschungen.
+Es geht auf dieser Reise zurück in eine einzigartige Ära, um eine große Liebe und einen großen Verrat. Um den amerikanischen Traum, der durch Flo-Jos mysteriösen Tod zum Albtraum wird. Um Rassismus, Sexismus, große Weltpolitik und die Frage, was das alles mit uns heute zu tun hat.
+Und um Geheimnisse, die eigentlich verborgen bleiben sollen.</p>
+<p>Hören Sie die erste Folge kostenlos – die weiteren sechs Folgen mit SZ Plus wöchentlich unter <a href="https://www.sz.de/flojo2">sz.de/flojo2</a></p></p>
+                <a href="https://audio.podigee-cdn.net/1552399-m-beca7f6515fcc3aae36a1fd4d30f3312.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/17-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Podcast-Tipp: Im Schattenkloster (Trailer)</h2>
+                    <time datetime="2024-02-09T00:00:16+00:00">09.02.2024</time>
+                </header>
+                <p><p>Neue Podcast-Serie des SZ-Magazins in Zusammenarbeit mit Audible: 
+In einer kalten Novembernacht flieht Tom aus dem Kloster. Ob er seine Frau Jana und die Kinder wiedersehen wird, weiß er nicht. Aber er muss raus aus der Gemeinschaft, zu der er mit seiner Familie gezogen war. Tom erträgt es nicht mehr, wie die Mitglieder von “Go&amp;Change” sich an ihre Grenzen bringen und daran zerbrechen.</p>
+<p>"Go&amp;Change” verspricht eine “Kultur der Liebe”. Doch mit der Zeit ist etwas gekippt. Aus einer Gruppe von Freunden wurde eine sogenannte Psychogruppe – mit zwei Männern an der Spitze, die alle manipulieren und körperlich und psychisch fertig machen. Wie kann es passieren, dass Menschen ihr Leben komplett in die Hände eines anderen legen? Und wie kann Tom seine Familie da rausholen?</p>
+<p>Reporter des SZ-Magazins erfahren von Aussteigern, wie der “Guru” die Bewohner an das Leben im Kloster bindet und wie schnell der Grat zwischen Tätern und Opfern verschwimmen kann.</p>
+<p>**Hören Sie alle acht Folgen wöchentlich mit SZ Plus oder einem kostenlosen SZ-Plus-Probeabo unter sz.de/schattenkloster01</p></p>
+                <a href="https://audio.podigee-cdn.net/1362998-m-c59cc41c0285bad6961dd7cf91f79db1.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/16-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Podcast-Tipp: Dämon – Der Exorzist aus dem Internet</h2>
+                    <time datetime="2023-12-07T00:00:15+00:00">07.12.2023</time>
+                </header>
+                <p><p>Das SZ Magazin hat einen neuen Podcast gemacht: Offiziell gibt es in Deutschland keine Teufelsaustreibungen mehr. Aber in Sozialen Netzwerken verspricht ein selbsternannter Exorzist namens »Nature23« vor allem jungen Frauen, sie von ihren »Dämonen« zu befreien.</p>
+<p>Hunderte sollen sich schon auf seine gefährlichen Rituale eingelassen haben, Betroffene erheben schwere Vorwürfe gegen den Mann. Warum stoppt ihn niemand?</p>
+<p>Ein SZ-Magazin-Reporter macht sich auf eine aufwühlende Spurensuche – und stößt dabei auf eine rätselhafte Krankheit, eines der größten Tabus der Kirche und auf mutige Frauen, die sich endlich wehren wollen. Aber was und wem kann man noch glauben?</p>
+<p>**Hören Sie hier die erste Folge – alle weiteren fünf Folgen wöchentlich mit SZ Plus oder einem kostenlosen SZ-Plus-Probeabo unter sz.de/daemon-podcast.</p></p>
+                <a href="https://audio.podigee-cdn.net/1304024-m-7a7ca656b0e34e9dfeee39b749baa3dd.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/15-new-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Die wütende Frau</h2>
+                    <time datetime="2020-05-07T00:00:14+00:00">07.05.2020</time>
+                </header>
+                <p><p><em>Die neue Staffel des SZ-Magazin-Podcasts, mit Teresa Bücker.</em></p>
+<p><strong>Folge 5:</strong></p>
+<p>In der Coronakrise werden die Interessen von Frauen systematisch vernachlässigt. Ein guter Grund, wütend zu werden. Häufig aber wird Frauen in privaten wie öffentlichen Debatten ihre Wut nicht zugestanden. Die Reaktionen sind ablehnend. Wie lässt sich das ändern? Lara Fritzsche im Gespräch mit Teresa Bücker über ein gutes Gefühl und seine Kraft. </p>
+<p><a href="https://sz-magazin.sueddeutsche.de/podcast/podcast-teresa-buecker-88623">Alle Infos zum Podcast finden Sie auch auf sz-magazin.de/podcast</a></p>
+<p><strong>Moderation:</strong> Lara Fritzsche</p>
+<p><strong>Redaktion:</strong> Franziska von Malsen, Laura Terberl</p>
+<p><strong>Produktion:</strong> Franziska von Malsen, Carolin Lenk</p></p>
+                <a href="https://audio.podigee-cdn.net/216358-m-46ff8225d84d84b068836c384f71edf6.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/14-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Sag mir, wo die Väter sind?</h2>
+                    <time datetime="2020-04-29T00:00:13+00:00">29.04.2020</time>
+                </header>
+                <p><p><em>Die neue Staffel des SZ-Magazin-Podcasts, mit Teresa Bücker.</em></p>
+<p><strong>Folge 4:</strong>
+Corona führt zurück in die 50er. Der Mann wird wieder zum Ernährer und die Frau zur Kümmererin. Auch vor der Pandemie gingen die meisten Männer gar nicht oder nur sehr kurz in Elternzeit. Und kümmerten sich auch im Alltag statistisch weit weniger um ihre Kinder. Warum nur? <strong>Teresa Bücker im Gespräch mit Lara Fritzsche</strong> über die große Frage: Warum kämpfen Väter nicht auch um eine gleichberechtigte Elternschaft?</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/podcast/podcast-teresa-buecker-88623">Alle Infos zum Podcast finden Sie auch auf sz-magazin.de/podcast</a></p>
+<p><strong>Moderation:</strong> Lara Fritzsche</p>
+<p><strong>Redaktion:</strong> Franziska von Malsen, Laura Terberl</p>
+<p><strong>Produktion:</strong> Franziska von Malsen, Carolin Lenk</p></p>
+                <a href="https://audio.podigee-cdn.net/212194-m-9cd18f5df143d6536a1be431afbe3300.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/13-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Kinder und Karriere</h2>
+                    <time datetime="2020-04-23T00:00:12+00:00">23.04.2020</time>
+                </header>
+                <p><p>Die neue Staffel des SZ-Magazin-Podcasts, mit Teresa Bücker. </p>
+<p><strong>Folge 3</strong>: Sich selbst verwirklichen, Geld verdienen, unabhängig bleiben – aber eben auch: fürs Kind da sein, die Partnerschaft pflegen, zu sich selbst finden. Wie kann das alles zusammengehen? Darüber reden <strong>Teresa Bücker und Lara Fritzsche</strong> diese Woche im Podcast.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/freie-radikale-die-ideenkolumne">Alle Kolumnen von Teresa Bücker für das SZ-Magazin finden Sie hier.</a></p>
+<p><a href="https://sz-magazin.sueddeutsche.de/podcast/podcast-teresa-buecker-88623">Alle Infos zum Podcast finden Sie auch auf sz-magazin.de/podcast</a></p>
+<p><strong>Moderation:</strong> Lara Fritzsche</p>
+<p><strong>Redaktion:</strong> Franziska von Malsen, Laura Terberl</p>
+<p><strong>Produktion:</strong> Franziska von Malsen, Carolin Lenk</p></p>
+                <a href="https://audio.podigee-cdn.net/207853-m-e80b1d781f466d517ed0e8de9c37e04c.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/12-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Von Bonuseltern und Wahlkindern</h2>
+                    <time datetime="2020-04-16T00:00:11+00:00">16.04.2020</time>
+                </header>
+                <p><p><strong>In der zweiten Staffel unseres SZ-Magazin-Podcasts redet Teresa Bücker über radikale Ideen für eine bessere Gesellschaft und beantwortet Fragen der Leserinnen und Leser zu Ihrer Kolumne "Freie Radikale".</strong></p>
+<p>Die einen sehnen sich nach einem Kind. Andere Paare haben Kinder und wären gerne mehr Erwachsene, um sie groß zu ziehen. Trotzdem wurschteln sich die meisten Familien immer noch mühsam als Kleinfamilie durchs Leben. Dabei ginge es anders leichter, weiß Teresa Bücker. Was sich ändern muss, damit neue Familienmodelle möglich werden.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/freie-radikale-die-ideenkolumne">Alle Kolumnen von Teresa Bücker für das SZ-Magazin finden Sie hier.</a></p>
+<p><a href="https://sz-magazin.sueddeutsche.de/podcast/podcast-teresa-buecker-88623">Alle Infos zum Podcast finden Sie auch auf sz-magazin.de/podcast</a></p>
+<p><strong>Moderation:</strong> Lara Fritzsche</p>
+<p><strong>Redaktion:</strong> Franziska von Malsen, Laura Terberl</p>
+<p><strong>Produktion:</strong> Franziska von Malsen, Carolin Lenk</p></p>
+                <a href="https://audio.podigee-cdn.net/204292-m-4520261d219905da0c1af2495b08b446.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/11-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie sich Care-Arbeit in Deutschland verändern muss</h2>
+                    <time datetime="2020-04-08T00:00:10+00:00">08.04.2020</time>
+                </header>
+                <p><p><strong>In der zweiten Staffel unseres SZ-Magazin-Podcasts redet Teresa Bücker über radikale Ideen für eine bessere Gesellschaft und beantwortet Fragen der Leserinnen und Leser zu Ihrer Kolumne "Freie Radikale".</strong></p>
+<p>Viele Paare sagen, sie würden es ja gerne tun – sich die Arbeit zuhause und in der Familie teilen. Warum gelingt es den meisten trotzdem nicht? Welche politischen Maßnahmen könnten helfen oder sollen Kinder erziehen und Wohnung säubern Privatsache bleiben? Teresa Bücker über die Hürden bei der Aufteilung der Care-Arbeit und warum Hilfskräfte aus dem Ausland nicht die Lösung für eine gleichberechtigte Lebensweise in Deutschland sein können.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/freie-radikale-die-ideenkolumne">Alle Kolumnen von Teresa Bücker für das SZ-Magazin finden Sie hier.</a></p>
+<p><a href="https://sz-magazin.sueddeutsche.de/podcast/podcast-teresa-buecker-88623">Alle Infos zum Podcast finden Sie auch auf sz-magazin.de/podcast</a></p>
+<p><strong>Moderation:</strong> Lara Fritzsche</p>
+<p><strong>Redaktion:</strong> Franziska von Malsen, Laura Terberl</p>
+<p><strong>Produktion:</strong> Franziska von Malsen, Carolin Lenk</p></p>
+                <a href="https://audio.podigee-cdn.net/199916-m-da2abf6f038ebe4857f4949efcfc3b74.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/10-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Keine Hausgeburt ohne Malerfolie</h2>
+                    <time datetime="2020-03-19T00:00:09+00:00">19.03.2020</time>
+                </header>
+                <p><p>In der <strong>letzten Folge des Hebammen-Podcasts</strong> erzählt <strong>Maja Böhler</strong> von der Geburt daheim. Früher war das selbstverständlich, heute ist es ein Luxus, den sich manche Paare leisten wollen. Aber ist eine <strong>Hausgeburt</strong> nicht gefährlich? Und was ist vom Trend zur »<strong>Alleingeburt</strong>« zu halten? Böhler erzählt von riskanten Alleingängen und dem überraschenden Anruf eines werdenden Vaters.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl, Christina Winkler, Korbinian Guggenmos.</p></p>
+                <a href="https://audio.podigee-cdn.net/185123-m-da4096395c4405d4c1390fdc6804eb62.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/9-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ab ins Bett</h2>
+                    <time datetime="2020-03-12T00:00:08+00:00">12.03.2020</time>
+                </header>
+                <p><p>Die ersten sechs bis acht Wochen nach der Entbindung nennt man »<strong>Wochenbett</strong>«. So wundervoll die ersten Tagen mit dem Neugeborenen auch sind, werden die Eltern in dieser Zeit doch auf harte Proben gestellt. </p>
+<p>Die <strong>Hebamme Maja Böhler</strong> erzählt in unserer neuen Podcastfolge von höllisch schmerzenden Stillversuchen, fehlendem Schlaf und Männern, die sich wundern, warum ihre Frauen dauernd oben ohne durch die Wohnung laufen.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl, Marlene Thiele.</p></p>
+                <a href="https://audio.podigee-cdn.net/183023-m-0642e410650e4b948d402b8fa87ae4bd.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/8-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Stören Handys bei der Geburt?</h2>
+                    <time datetime="2020-03-05T00:00:07+00:00">05.03.2020</time>
+                </header>
+                <p><p>Die Digitalisierung macht auch vor dem Kreißsaal nicht Halt. Ist das gut oder schlecht? Die Hebamme <strong>Maja Böhler</strong> sagt, was sie von Wehen-Apps hält, welche Fotos werdende Väter lieber nicht ungefragt schießen sollten und warum sie Müttern empfiehlt, immer ein Ladegerät mit zur Entbindung zu nehmen.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Korbinian Guggenmos, Vinzent-Vitus Leitgeb, Julia Ongyerth, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/180093-m-cfa11270a37dc04851ca4e032ab9f29b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/7-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Warum Hebammen nie richtig frei haben</h2>
+                    <time datetime="2020-02-27T00:00:06+00:00">27.02.2020</time>
+                </header>
+                <p><p>Hebamme ist nicht nur ein Beruf, und Hebamme ist man nicht nur vom Dienstbeginn bis zum Dienstende. Nein, <strong>»die Hebamme«</strong> ist man auch auf Partys, im Freundeskreis und Privatleben. </p>
+<p><strong>Maja Böhler</strong> erzählt von den vielen Fragen, die sowohl gute Freundinnen als auch völlig fremde Menschen an eine Hebamme haben. Sie erklärt, warum es schwierig ist, als Hebamme enge Bekannte bei einer Geburt zu betreuen, und warum so viele Kinder <strong>zwischen Weihnachten und Silvester</strong> gezeugt werden.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Julia Ongyerth, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/177687-m-d638a033355c656222756075185ebbd6.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/6-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Ein Notfall im Kreißsaal</h2>
+                    <time datetime="2020-02-20T00:00:05+00:00">20.02.2020</time>
+                </header>
+                <p><p><em>Ein Hinweis: Diese Folge enthält teilweise detailierte Beschreibungen von medizinischen Komplikationen bei der Geburt.</em></p>
+<p>»In meinem innerlichen Lehrbuch hab ich eine Seite weitergeblättert – und da stand nichts. Dieser Notfall ist nicht beschrieben, den gibt es einfach nicht.« Unsere Hebamme erzählt in der neuen Podcast-Folge von einer Geburt, die harmlos beginnt und sie dann an die Grenzen ihres Wissens und darüber hinaus bringt. Was macht man, wenn es um Leben und Tod geht, aber niemand weiter weiß? </p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/173978-m-4258f6a1e0f9c0e8733b42bcc2452879.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/5-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Väter im Kreißsaal</h2>
+                    <time datetime="2020-02-13T00:00:04+00:00">13.02.2020</time>
+                </header>
+                <p><p>In alten Kinofilmen sieht man die <strong>wartenden Väter</strong> mit Anzug und Hut vor dem Kreißsaal hin- und herlaufen, bis die Hebamme heraustritt und sagt: <strong>»Es ist ein Junge!«</strong> Mit der Zeit spielten die Männer aber eine immer aktivere Rolle bei der Entbindung, was eine neue Generation Väter hervorgebracht hat, findet die <strong>Hebamme Maja Böhler</strong>. </p>
+<p>Die <strong>Grenzerfahrung Geburt</strong> mache den Vätern bewusst, was ihre Frau beim Gebären durchmacht, und lasse Paare noch enger zusammenwachsen. Warum sie es als Hebamme trotzdem versteht, wenn Väter nicht bei der Geburt dabei sein wollen, erzählt sie in der neuen Podcastfolge.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/172409-m-497a6ae8b76cc7ffe9445140e2dd2101.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/4-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Warum ich Hebamme geworden bin</h2>
+                    <time datetime="2020-02-06T00:00:03+00:00">06.02.2020</time>
+                </header>
+                <p><p>„Die Mutter und der Vater brachen in Tränen aus und ich auch. Ich war so erfasst und so gerührt davon, dass da ein Mensch zur Welt gekommen ist. Ich bin danach auf einer Welle aus Adrenalin geflogen für Stunden“, erinnert sich die Hebamme <strong>Maja Böhler</strong> an ihre erste Geburt. </p>
+<p>In der neuen Folge unseres <strong>Hebammen-Podcasts</strong> erzählt Böhler, wieso sie nach ihrem Studium eine Karriere in einer Unternehmensberatung ausgeschlagen hat, um wie ihre Uroma Geburtshelferin zu werden.</p>
+<p>Sie erinnert sich an das <strong>Glücksgefühl</strong>, nach langem Zögern seine berufliche Bestimmung zu finden und berichtet, wie schlecht <strong>Hebammenschülerinnen</strong> in Krankenhäusern behandelt werden.</p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/169760-m-a7c6c64512c1d6f0f669aafca5ceabee.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wie schmerzhaft ist eine Geburt?</h2>
+                    <time datetime="2020-01-30T00:00:02+00:00">30.01.2020</time>
+                </header>
+                <p><p>Der <strong>Schmerz</strong> ist eine der großen Unbekannten bei der Geburt – denn jede werdende Mutter erlebt ihn anders. Unsere Hebamme erzählt den Fall einer Frau, die beim ersten Kind eine sehr einfache und unbeschwerte Geburt hatte und daher bei ihrer zweiten Schwangerschaft entspannt in den Kreißsaal ging. Obwohl das Kind nahezu gleich groß war und sie sogar zur selben Tageszeit entband, war die Geburt aber dann sehr schmerzhaft.</p>
+<p><strong>Kann man sich auf Geburtsschmerzen vorbereiten?</strong> Gehört der Schmerz zum Geburtserlebnis dazu? Sind Frauen, die lieber gleich mit einer PDA oder einem geplanten Kaiserschnitt den Schmerz vermeiden wollen gar feige? Die Hebamme <strong>Maja Böhler</strong> arbeitet seit vielen Jahren in einem großen Krankenhaus und erzählt in der ersten Folge ihres Podcasts von ihren Erfahrungen und ihren Ansichten zum Thema <strong>Schmerzen im Kreißsaal.</strong></p>
+<p><a href="https://sz-magazin.sueddeutsche.de/tag/die-wehenschreiberin-hebammenkolumne">Die Hebammen-Kolumne gibt es auch als Text: Alle Folgen finden Sie unter diesem Link.</a></p>
+<p><a href="https://www.randomhouse.de/Taschenbuch/Die-Wehenschreiberin/Maja-Boehler/Goldmann-TB/e545069.rhd">Die Kolumnen sind auch gesammelt als Buch erschienen.</a></p>
+<p><strong>Redaktion &amp; Produktion:</strong> Vinzent-Vitus Leitgeb, Carlo Sarsky, Laura Terberl.</p></p>
+                <a href="https://audio.podigee-cdn.net/166591-m-6a0c767c7a2d8a02eea582f8041a10d5.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://sz-magazin.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
