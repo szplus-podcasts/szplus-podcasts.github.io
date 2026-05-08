@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SZ Podcasts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.cyan.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        .podcast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .podcast-cover {
+            max-width: 200px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+            border: 2px solid var(--pico-muted-border-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .podcast-header {
+                flex-direction: column;
+            }
+
+            .podcast-heading {
+                align-self: flex-start;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 900px !important;
+            }
+        }
+
+        .rss-button img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .rss-button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .podigee-podcast-player {
+            min-width: min(100%, 1000px) !important;
+        }
+
+        body>header {
+            z-index: 2;
+            position: sticky;
+            top: 0;
+            -webkit-backdrop-filter: blur(1rem);
+            backdrop-filter: blur(1rem);
+            background-color: var(--pico-background-color);
+            transition: border-top-color .4s ease-in-out, box-shadow .4s ease-in-out;
+            border-bottom-color: var(--pico-muted-border-color);
+            box-shadow: var(--pico-card-box-shadow);
+            padding-bottom: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        @media (max-width: 750px) {
+            .flex {
+                flex-direction: column;
+            }
+        }
+
+        header hgroup {
+            margin-bottom: 0;
+        }
+
+        header nav li a svg {
+            width: 2rem;
+            height: 2rem;
+            color: var(--pico-contrast);
+            margin-bottom: 1rem;
+        }
+    </style>
+    <script>
+        let isLight = window?.matchMedia('(prefers-color-scheme: dark)').matches ? false : true
+        const html = document.documentElement
+        let switchTheme;
+        const sun = '<svg viewBox="0 0 16 16"><path fill="currentColor" d="M8 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg>'
+        const moon = '<svg viewBox="0 0 16 16"><g fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063c-4.61 0-8.343-3.714-8.343-8.29c0-1.167.242-2.278.681-3.286z"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/></g></svg>'
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTheme = document.getElementById('theme_switcher')
+            process()
+            switchTheme.addEventListener('click', (e) => {
+                e.preventDefault()
+                isLight = !isLight
+                process()
+            })
+        })
+
+        const process = () => {
+            html.setAttribute('data-theme', isLight ? 'light' : 'dark')
+            switchTheme.innerHTML = isLight ? sun : moon
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <ul>
+                <li>
+                    <a href="/">
+                        <hgroup>
+                            <h1>SZ Plus Podcasts</h1>
+                            <h2>aber kostenlos</h2>
+                        </hgroup>
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" id="theme_switcher"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="podcast-header">
+            <hgroup class="podcast-heading">
+                <h2>Eine Frau namens Naddel</h2>
+                
+            </hgroup>
+            <img class="podcast-cover" src="https://images.podigee-cdn.net/400x,sQed6yIlsX4fPEN5nAbm5b0Tghh9AHRE0hxlmUEvsOHc=/https://main.podigee-cdn.net/uploads/u1617/ef079e5e-fd38-4537-a6a4-cdef9fc88528.jpg" alt="Eine Frau namens Naddel">
+        </div>
+        <div class="rss-button-container">
+            <a class="rss-button" href="/naddel.xml">
+                <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg">
+            </a>
+        </div>
+        <p><p>Nadja Abd el Farrag wurde in den 90er Jahren als “Naddel” berühmt. Sie war vielleicht Deutschlands erste C-Prominente: Eine Frau, die bekannt war, obwohl keiner so recht wusste, wofür. Sie ging in den Dschungel und trat am Ballermann auf, sie ließ sich auf Sat.1 ihren Busen wiegen und auf RTL ihre Schulden durchrechnen. Sie war auf allen Kanälen. </p><p>Vor allem aber war sie die Freundin und viel länger die Ex von Dieter Bohlen. Diese eine Ex seiner vielen Exen, die immer etwas Tragisches ausstrahlte. Bis Nadja Abd el Farrag vor einem Jahr starb – und es plötzlich alle schon immer nur gut mit ihr gemeint haben wollten. </p><p>Das ist die Geschichte einer Frau, die daran gehindert wurde, ein selbstbestimmtes Leben zu führen. Von Männern mit großem Ego. Von einer Gesellschaft, die sie scheitern sehen wollte. Und einem Medienbetrieb, der unempathisch war, sexistisch und rassistisch. Wie viel hat sich seitdem überhaupt verändert? Und: War Nadja Abd el Farrag ihrer Zeit vielleicht sogar voraus?</p><p>Hören Sie die erste Folge kostenlos – alle weiteren vier Folgen wöchentlich ab dem 7. Mai mit SZ Plus.</p></p>
+        <section>
+            
+            <article>
+                <header>
+                    <h2>Das Prinzip Bohlen (2/5)</h2>
+                    <time datetime="2026-05-07T00:00:03+00:00">07.05.2026</time>
+                </header>
+                <p><p>Mitte der 90er Jahre hat Dieter Bohlen schon wieder eine Neue – und plötzlich ist Nadja Abd el Farrag nur noch “die Ex”. Aber sie kämpft um das luxuriöse Leben an der Seite des Mannes, der sie nie heiraten wollte – jetzt aber eine "Blitz-Ehe" mit Verona Feldbusch geschlossen hat. Es beginnt eine öffentliche Dreiecksbeziehung, die der Boulevard über Jahre ausschlachtet. Und in der am Ende nur eine verliert.</p></p>
+                <a href="https://audio.podigee-cdn.net/2475508-m-97bb489aa734114e401928c3d22fe197.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://naddel.podigee.io/3-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Wer kennt diese Frau? (1/5)</h2>
+                    <time datetime="2026-05-07T00:00:02+00:00">07.05.2026</time>
+                </header>
+                <p><p>Als Nadja Abd el Farrag vor einem Jahr stirbt, bricht ein “Rest In Peace”-Sturm aus: Prominente und Wegbegleiter zeigen sich bestürzt. Aber wer kannte den Menschen hinter der Figur “Naddel”? Diese Frage führt zurück ins Hamburg der 80er Jahre: Eine junge, rebellische Frau lernt in einer Diskothek den Pop-Giganten Dieter Bohlen kennen und wird vor aller Augen seine Neue. Aber vor allem wird sie Teil eines gnadenlosen Systems.</p></p>
+                <a href="https://audio.podigee-cdn.net/2475506-m-bb37753dcd2e6ac9dfbafb1b60130e2b.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://naddel.podigee.io/2-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+            <article>
+                <header>
+                    <h2>Trailer: Eine Frau names Naddel </h2>
+                    <time datetime="2026-05-07T00:00:01+00:00">07.05.2026</time>
+                </header>
+                <p><p>Nadja Abd el Farrag wurde in den 90er Jahren als “Naddel” berühmt. Sie war vielleicht Deutschlands erste C-Prominente: Eine Frau, die bekannt war, obwohl keiner so recht wusste, wofür. Sie ging in den Dschungel und trat am Ballermann auf, sie ließ sich auf Sat.1 ihren Busen wiegen und auf RTL ihre Schulden durchrechnen. Sie war auf allen Kanälen. </p>
+<p>Vor allem aber war sie die Freundin und viel länger die Ex von Dieter Bohlen. Diese eine Ex seiner vielen Exen, die immer etwas Tragisches ausstrahlte. Bis Nadja Abd el Farrag vor einem Jahr starb – und es plötzlich alle schon immer nur gut mit ihr gemeint haben wollten. </p>
+<p>Das ist die Geschichte einer Frau, die daran gehindert wurde, ein selbstbestimmtes Leben zu führen. Von Männern mit großem Ego. Von einer Gesellschaft, die sie scheitern sehen wollte. Und einem Medienbetrieb, der unempathisch war, sexistisch und rassistisch. Wie viel hat sich seitdem überhaupt verändert? Und: War Nadja Abd el Farrag ihrer Zeit vielleicht sogar voraus?</p>
+<p>Hören Sie die erste Folge kostenlos – alle weiteren vier Folgen wöchentlich ab dem 7. Mai mit SZ Plus.</p></p>
+                <a href="https://audio.podigee-cdn.net/2475504-m-01015a1191a46f25e47ac64f5b1e8bf3.mp3?source=webplayer">MP3 Download</a>
+                <footer><script class="podigee-podcast-player"
+ src="https://player.podigee-cdn.net/podcast-player/javascripts/podigee-podcast-player.js"
+ data-configuration="https://naddel.podigee.io/t1-neue-episode/embed?context=external"></script></footer>
+            </article>
+            
+        </section>
+    </main>
+</body>
